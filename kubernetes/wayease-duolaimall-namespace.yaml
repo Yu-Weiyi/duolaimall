@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wayease-duolaimall
+  labels:
+    author: wayease
+    project: duolaimall
+    kubernetes.io/metadata.name: wayease-duolaimall
+    istio-injection: enabled
