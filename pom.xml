@@ -5,7 +5,7 @@
 
     <groupId>pers.wayease.duolaimall</groupId>
     <artifactId>duolaimall-parent</artifactId>
-    <version>0.0.0.20241005-alpha</version>
+    <version>${duolaimall.parent.version}</version>
     <packaging>pom</packaging>
     <name>duolaimall</name>
     <description>duolaimall</description>
@@ -17,11 +17,16 @@
                 <url>https://github.com/Yu-Weiyi</url>
             </developer>
         </developers>
-<!--    <modules>-->
-<!--    </modules>-->
+    <modules>
+        <module>duolaimall-common</module>
+    </modules>
     <properties>
+        <duolaimall.parent.version>0.0.0-SNAPSHOT</duolaimall.parent.version>
+        <revision>0.0.0</revision>
+<!--        <sha1>${env.SHA1}</sha1>-->
+        <changelist>SNAPSHOT</changelist>
         <java.version>17</java.version>
-        <spring-boot.version>2.7.17</spring-boot.version>
+        <spring.boot.version>2.7.17</spring.boot.version>
         <spring.cloud.version>2021.0.9</spring.cloud.version>
         <spring.cloud.kubernetes.version>2.1.9</spring.cloud.kubernetes.version>
 <!--        <alibaba.version>2021.0.5.0</alibaba.version>-->
@@ -43,14 +48,14 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>${spring.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${cloud.version}</version>
+                <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -125,34 +130,46 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-configuration-processor</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>${spring.boot.version}</version>
                 <scope>annotationProcessor</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-devtools</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>${spring.boot.version}</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>${spring.boot.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-jdbc</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>${spring.boot.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-actuator</artifactId>
-                <version>${spring-boot.version}</version>
+                <artifactId>spring.boot-starter-actuator</artifactId>
+                <version>${spring.boot.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -186,7 +203,7 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring-boot.version}</version>
+                    <version>${spring.boot.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
