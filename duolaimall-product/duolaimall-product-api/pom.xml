@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>pers.wayease.duolaimall</groupId>
+        <artifactId>duolaimall-product</artifactId>
+        <version>${revision}-${changelist}</version>
+    </parent>
+    <artifactId>duolaimall-product-api</artifactId>
+    <version>${revision}-${changelist}</version>
+    <name>duolaimall-product-api</name>
+    <description>duolaimall-product-api</description>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>pers.wayease.duolaimall</groupId>
+            <artifactId>duolaimall-common</artifactId>
+            <version>${revision}-${changelist}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+</project>

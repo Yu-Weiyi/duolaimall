@@ -20,6 +20,7 @@
     <modules>
         <module>duolaimall-common</module>
         <module>duolaimall-email</module>
+        <module>duolaimall-product</module>
     </modules>
     <properties>
         <revision>0.1.0</revision>
