@@ -9,3 +9,13 @@ data:
       info:
         author: wayease
         email: yu_weiyi@outlook.com
+    logging:
+      level:
+        com.mysql.cj.jdbc: debug
+    mybatis-plus:
+      configuration:
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+      mapper-locations: classpath:mapper/*Mapper.xml
+    jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8

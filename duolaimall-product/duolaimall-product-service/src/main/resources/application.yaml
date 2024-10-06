@@ -25,3 +25,6 @@ management:
   health:
     kubernetes:
       enabled: true
+  metrics:
+    enable:
+      hikari: true
