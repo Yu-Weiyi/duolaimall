@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wayease-duolaimall-common-dev-configmap
+  namespace: wayease-duolaimall
+data:
+  application-common.yaml: |
+    custom:
+      info:
+        author: wayease
+        email: yu_weiyi@outlook.com

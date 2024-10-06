@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: ${spring.cloud.kubernetes.namespace}-email-service
+  profiles:
+    active: common, dev
+  server:
+    port: 8080
+  cloud:
+    kubernetes:
+      namespace: wayease-duolaimall
+      config:
+        enabled: true
+        sources:
+          - name: ${spring.cloud.kubernetes.namespace}-common-${spring.profiles.active}-configmap
+            namespace: ${spring.cloud.kubernetes.namespace}
+            use-name-as-prefix: false
+          - name: ${spring.application.name}-${spring.profiles.active}-configmap
+            namespace: ${spring.cloud.kubernetes.namespace}
+            use-name-as-prefix: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    kubernetes:
+      enabled: true

@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>pers.wayease.duolaimall</groupId>
+    <artifactId>duolaimall-parent</artifactId>
+    <version>${revision}-${changelist}</version>
+  </parent>
+  <artifactId>duolaimall-email</artifactId>
+  <version>${revision}-${changelist}</version>
+  <name>duolaimall-email</name>
+  <description>duolaimall-email</description>
+  <packaging>pom</packaging>
+  <modules>
+    <module>duolaimall-email-api</module>
+    <module>duolaimall-email-service</module>
+  </modules>
+</project>

@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -7,3 +8,36 @@ metadata:
     project: duolaimall
     kubernetes.io/metadata.name: wayease-duolaimall
     istio-injection: enabled
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: wayease-duolaimall-serviceaccount
+  namespace: wayease-duolaimall
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: wayease-duolaimall-configmap-reader-role
+  namespace: wayease-duolaimall
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: wayease-duolaimall-configmap-reader-rolebinding
+  namespace: wayease-duolaimall
+subjects:
+  - kind: ServiceAccount
+    name: wayease-duolaimall-serviceaccount
+    namespace: wayease-duolaimall
+roleRef:
+  kind: Role
+  name: wayease-duolaimall-configmap-reader-role
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,119 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wayease-duolaimall-email-service
+  namespace: wayease-duolaimall
+  labels:
+    app: wayease-duolaimall-email-service
+spec:
+  selector:
+    app: wayease-duolaimall-email-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wayease-duolaimall-email-service-deployment
+  namespace: wayease-duolaimall
+  labels:
+    app: wayease-duolaimall-email-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wayease-duolaimall-email-service
+  template:
+    metadata:
+      name: wayease-duolaimall-email-service-deployment
+      labels:
+        app: wayease-duolaimall-email-service
+    spec:
+      serviceAccountName: wayease-duolaimall-serviceaccount
+      containers:
+        - name: wayease-duolaimall-email-service
+          image: yuweiyi/duolaimall-email-service:0.1.0-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: common-config-volume
+              mountPath: /app/config/application-common.yaml
+              subPath: application-common.yaml
+            - name: dev-config-volume
+              mountPath: /app/config/application-dev.yaml
+              subPath: application-dev.yaml
+          env:
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-email-service-dev-secret
+                  key: mail-password
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-email-service-dev-secret
+                  key: db-password
+      volumes:
+        - name: common-config-volume
+          configMap:
+            name: wayease-duolaimall-common-dev-configmap
+            items:
+              - key: application-common.yaml
+                path: application-common.yaml
+        - name: dev-config-volume
+          configMap:
+            name: wayease-duolaimall-email-service-dev-configmap
+            items:
+              - key: application-dev.yaml
+                path: application-dev.yaml
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wayease-duolaimall-email-service-dev-configmap
+  namespace: wayease-duolaimall
+data:
+  application-dev.yaml: |
+    spring:
+      mail:
+        host: smtp.qq.com
+        port: 587
+        username: wayease@qq.com
+        password: ${MAIL_PASSWORD}
+        properties:
+          mail:
+            smtp:
+              auth: true
+              starttls:
+                enable: true
+              ssl:
+                socketFactory:
+                  class: com.sun.mail.util.MailSSLSocketFactory
+                  fallback: false
+            default-encoding: UTF-8
+      datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql:replication://wayease-mysql-primary.wayease-middleware.svc.cluster.local:3306,wayease-mysql-secondary.wayease-middleware.svc.cluster.local:3306/wayease_duolaimall_email?
+          readFromMasterWhenNoSlaves=true&allowMasterDownConnections=true&allowSlaveDownConnections=true&
+          connectTimeout=10000&socketTimeout=30000&autoReconnect=true&loadBalanceStrategy=roundRobin&
+          cacheResultSetMetadata=true&useSSL=false&useLocalSessionState=true&cachePrepStmts=true&useServerPrepStmts=true&
+          characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: ${DB_PASSWORD}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wayease-duolaimall-email-service-dev-secret
+  namespace: wayease-duolaimall
+type: Opaque
+data:
+  mail-password: YnlieXFvbG92ZGdobGpnaA==
+  db-password: MndzeCNFREM=

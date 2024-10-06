@@ -5,7 +5,7 @@
 
     <groupId>pers.wayease.duolaimall</groupId>
     <artifactId>duolaimall-parent</artifactId>
-    <version>${duolaimall.parent.version}</version>
+    <version>${revision}-${changelist}</version>
     <packaging>pom</packaging>
     <name>duolaimall</name>
     <description>duolaimall</description>
@@ -19,12 +19,12 @@
         </developers>
     <modules>
         <module>duolaimall-common</module>
+        <module>duolaimall-email</module>
     </modules>
     <properties>
-        <duolaimall.parent.version>0.0.0-SNAPSHOT</duolaimall.parent.version>
-        <revision>0.0.0</revision>
-<!--        <sha1>${env.SHA1}</sha1>-->
+        <revision>0.1.0</revision>
         <changelist>SNAPSHOT</changelist>
+
         <java.version>17</java.version>
         <spring.boot.version>2.7.17</spring.boot.version>
         <spring.cloud.version>2021.0.9</spring.cloud.version>
@@ -159,18 +159,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
@@ -193,7 +181,6 @@
                             <artifactId>lombok-mapstruct-binding</artifactId>
                             <version>${lombok-mapstruct-binding.version}</version>
                         </path>
-
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
