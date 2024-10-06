@@ -1,5 +1,6 @@
 package pers.wayease.duolaimall.email.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,6 +26,7 @@ import java.util.Date;
  * @since 2024-10-05 20:46
  */
 @Service
+@Slf4j
 public class EmailServiceImpl implements EmailService {
 
     @Autowired
@@ -34,11 +36,16 @@ public class EmailServiceImpl implements EmailService {
 
     @Value("${spring.mail.username}")
     private String username;
+    @Value("${spring.mail.password}")
+    private String password;
     @Value("${custom.info.email}")
     private String testEmail;
 
     @Override
     public void testConnection() {
+        log.info("+ === Test SMTP connection");
+        log.info("| username: {}", username);
+        log.info("| password: {}", password);
         try {
             javaMailSenderImpl.testConnection();
         } catch (MessagingException e) {

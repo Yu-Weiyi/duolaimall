@@ -36,7 +36,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-email-service
-          image: yuweiyi/duolaimall-email-service:0.1.0-SNAPSHOT
+          image: yuweiyi/duolaimall-email-service:0.1.1-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -115,5 +115,5 @@ metadata:
   namespace: wayease-duolaimall
 type: Opaque
 data:
-  mail-password: YnlieXFvbG92ZGdobGpnaA==
+  mail-password: b21lZHBvaWlqZHl6Z2Vkag==
   db-password: MndzeCNFREM=
