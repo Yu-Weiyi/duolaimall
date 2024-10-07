@@ -1,32 +1,72 @@
 ---
-apiVersion: gateway.networking.k8s.io/v1beta1
+apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
   name: wayease-duolaimall-istio-gateway
   namespace: wayease-duolaimall
 spec:
-  gatewayClassName: istio
-  listeners:
-    - name: http
-      port: 80
-      protocol: HTTP
-      allowedRoutes:
-        namespaces:
-          from: Same
+  selector:
+    istio: wayease-istio-ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
 ---
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: HTTPRoute
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
 metadata:
-  name: wayease-duolaimall-istio-http-route
+  name: wayease-duolaimall-istio-virtualservice
   namespace: wayease-duolaimall
 spec:
-  parentRefs:
-    - name: wayease-duolaimall-istio-gateway
-  rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /email
-      backendRefs:
-        - name: wayease-duolaimall-email-service
-          port: 8080
+  gateways:
+    - wayease-duolaimall-istio-gateway
+  hosts:
+    - "*"
+  http:
+    - match:
+        - uri:
+            prefix: "/email"
+      corsPolicy:
+        allowOrigin:
+          - "*"
+        allowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        allowHeaders:
+          - Authorization
+          - Content-Type
+        allowCredentials: true
+        maxAge: "86400s"
+      route:
+        - destination:
+            host: wayease-duolaimall-email-service.wayease-duolaimall.svc.cluster.local
+            port:
+              number: 8080
+    - match:
+        - uri:
+            prefix: "/admin/product"
+      corsPolicy:
+        allowOrigin:
+          - "*"
+        allowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        allowHeaders:
+          - Authorization
+          - Content-Type
+        allowCredentials: true
+        maxAge: "86400s"
+      route:
+        - destination:
+            host: wayease-duolaimall-product-service.wayease-duolaimall.svc.cluster.local
+            port:
+              number: 8080
