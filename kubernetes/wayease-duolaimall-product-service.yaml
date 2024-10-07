@@ -36,7 +36,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-product-service
-          image: yuweiyi/duolaimall-product-service:0.1.1-SNAPSHOT
+          image: yuweiyi/duolaimall-product-service:0.2.1-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -101,6 +101,7 @@ data:
           minimum-idle: 10
           pool-name: SPHHikariPool
           registerMbeans: true
+          logLevel: DEBUG
     minio:
       endpointUrl: http://8.137.62.188:19000/
       accessKey: admin
