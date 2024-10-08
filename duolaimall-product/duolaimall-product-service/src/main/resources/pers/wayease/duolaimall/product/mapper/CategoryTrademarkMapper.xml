@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.wayease.duolaimall.product.mapper.CategoryTrademarkMapper">
+
+    <select id="selectListByThirdLevelCategoryId" resultType="pers.wayease.duolaimall.product.pojo.model.Trademark">
+        SELECT
+        t.id,
+        t.tm_name,
+        t.logo_url
+        FROM category_trademark AS ct
+        INNER JOIN trademark AS t
+        ON ct.trademark_id = t.id
+        WHERE
+        ct.third_level_category_id = #{thirdLevelCategoryId}
+        AND ct.is_deleted = 0
+        AND t.is_deleted = 0
+    </select>
+
+    <select id="selectListExcludedByThirdLevelCategoryId" resultType="pers.wayease.duolaimall.product.pojo.model.Trademark">
+        SELECT DISTINCT
+        t.id,
+        t.tm_name,
+        t.logo_url
+        FROM trademark AS t
+        LEFT JOIN category_trademark AS ct
+        ON t.id = ct.trademark_id
+        WHERE
+        (
+        ct.third_level_category_id IS NULL
+        OR ct.third_level_category_id != #{thirdLevelCategoryId}
+        OR
+        ct.third_level_category_id = #{thirdLevelCategoryId}
+        AND ct.is_deleted = 1
+        )
+        AND t.is_deleted = 0
+        AND t.id NOT IN (
+        SELECT ct1.trademark_id
+        FROM category_trademark AS ct1
+        WHERE
+        ct1.third_level_category_id = #{thirdLevelCategoryId}
+        AND ct1.is_deleted = 0
+        )
+    </select>
+</mapper>

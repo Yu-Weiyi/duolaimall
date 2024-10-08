@@ -36,7 +36,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-product-service
-          image: yuweiyi/duolaimall-product-service:0.2.5-SNAPSHOT
+          image: yuweiyi/duolaimall-product-service:0.2.6-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
