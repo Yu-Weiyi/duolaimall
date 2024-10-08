@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pers.wayease.duolaimall.common.model.BaseEntity;
+import pers.wayease.duolaimall.common.pojo.model.BaseEntity;
 
 import java.util.List;
 

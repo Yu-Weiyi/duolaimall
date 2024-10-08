@@ -3,7 +3,7 @@ package pers.wayease.duolaimall.product.pojo.model;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import pers.wayease.duolaimall.common.model.BaseEntity;
+import pers.wayease.duolaimall.common.pojo.model.BaseEntity;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>

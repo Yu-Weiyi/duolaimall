@@ -1,4 +1,4 @@
-package pers.wayease.duolaimall.product.converter.dto;
+package pers.wayease.duolaimall.product.converter;
 
 import org.mapstruct.Mapper;
 import pers.wayease.duolaimall.product.pojo.dto.FirstLevelCategoryDto;

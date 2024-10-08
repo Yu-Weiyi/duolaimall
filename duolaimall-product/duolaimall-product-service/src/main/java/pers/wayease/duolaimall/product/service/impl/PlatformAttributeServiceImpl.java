@@ -3,8 +3,7 @@ package pers.wayease.duolaimall.product.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pers.wayease.duolaimall.product.converter.dto.PlatformAttributeConverter;
-import pers.wayease.duolaimall.product.converter.param.PlatformAttributeParamConverter;
+import pers.wayease.duolaimall.product.converter.PlatformAttributeConverter;
 import pers.wayease.duolaimall.product.mapper.PlatformAttributeInfoMapper;
 import pers.wayease.duolaimall.product.mapper.PlatformAttributeValueMapper;
 import pers.wayease.duolaimall.product.pojo.dto.PlatformAttributeInfoDto;
@@ -35,13 +34,11 @@ public class PlatformAttributeServiceImpl implements PlatformAttributeService {
 
     @Autowired
     private PlatformAttributeConverter platformAttributeConverter;
-    @Autowired
-    private PlatformAttributeParamConverter platformAttributeParamConverter;
 
     @Override
     public void savePlatformAttributeInfo(PlatformAttributeInfoParam platformAttributeInfoParam) {
         Long platformAttributeId = platformAttributeInfoParam.getId();
-        PlatformAttributeInfo platformAttributeInfo = platformAttributeParamConverter.platformAttributeInfoParam2Po(platformAttributeInfoParam);
+        PlatformAttributeInfo platformAttributeInfo = platformAttributeConverter.platformAttributeInfoParam2Po(platformAttributeInfoParam);
         if (platformAttributeId != null) {
             // update info
             platformAttributeInfoMapper.updateById(platformAttributeInfo);
@@ -58,7 +55,7 @@ public class PlatformAttributeServiceImpl implements PlatformAttributeService {
         // insert new value list
         Long finalPlatformAttributeId = platformAttributeId;
         platformAttributeInfoParam.getAttrValueList().forEach(platformAttributeValueParam -> {
-            PlatformAttributeValue platformAttributeValue = platformAttributeParamConverter.platformAttributeValueParam2Po(platformAttributeValueParam);
+            PlatformAttributeValue platformAttributeValue = platformAttributeConverter.platformAttributeValueParam2Po(platformAttributeValueParam);
             platformAttributeValue.setId(null);
             platformAttributeValue.setAttrId(finalPlatformAttributeId);
             platformAttributeValueMapper.insert(platformAttributeValue);

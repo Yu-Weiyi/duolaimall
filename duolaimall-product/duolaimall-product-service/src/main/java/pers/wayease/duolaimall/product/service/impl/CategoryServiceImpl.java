@@ -3,7 +3,7 @@ package pers.wayease.duolaimall.product.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pers.wayease.duolaimall.product.converter.dto.CategoryConverter;
+import pers.wayease.duolaimall.product.converter.CategoryConverter;
 import pers.wayease.duolaimall.product.mapper.FirstLevelCategoryMapper;
 import pers.wayease.duolaimall.product.mapper.SecondLevelCategoryMapper;
 import pers.wayease.duolaimall.product.mapper.ThirdLevelCategoryMapper;

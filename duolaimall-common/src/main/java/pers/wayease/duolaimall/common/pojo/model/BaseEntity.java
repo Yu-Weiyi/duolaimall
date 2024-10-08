@@ -1,4 +1,4 @@
-package pers.wayease.duolaimall.common.model;
+package pers.wayease.duolaimall.common.pojo.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -22,7 +22,7 @@ import java.util.Date;
 @Data
 public class BaseEntity {
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

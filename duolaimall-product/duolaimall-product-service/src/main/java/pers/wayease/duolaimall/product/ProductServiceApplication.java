@@ -26,3 +26,6 @@ public class ProductServiceApplication {
         log.info("Product service started successfully.");
     }
 }
+
+// TODO add custom banner with project info, svc info, pod info and so on
+// TODO add prometheus metrics

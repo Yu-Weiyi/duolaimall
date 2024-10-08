@@ -1,10 +1,12 @@
-package pers.wayease.duolaimall.product.converter.dto;
+package pers.wayease.duolaimall.product.converter;
 
 import org.mapstruct.Mapper;
 import pers.wayease.duolaimall.product.pojo.dto.PlatformAttributeInfoDto;
 import pers.wayease.duolaimall.product.pojo.dto.PlatformAttributeValueDto;
 import pers.wayease.duolaimall.product.pojo.model.PlatformAttributeInfo;
 import pers.wayease.duolaimall.product.pojo.model.PlatformAttributeValue;
+import pers.wayease.duolaimall.product.pojo.param.PlatformAttributeInfoParam;
+import pers.wayease.duolaimall.product.pojo.param.PlatformAttributeValueParam;
 
 import java.util.List;
 
@@ -19,6 +21,10 @@ import java.util.List;
  */
 @Mapper(componentModel = "spring")
 public interface PlatformAttributeConverter {
+
+    PlatformAttributeInfo platformAttributeInfoParam2Po(PlatformAttributeInfoParam platformAttributeInfoParam);
+
+    PlatformAttributeValue platformAttributeValueParam2Po(PlatformAttributeValueParam platformAttributeValueParam);
 
     PlatformAttributeInfoDto platformAttributeInfoPo2Dto(PlatformAttributeInfo platformAttributeInfo);
 
