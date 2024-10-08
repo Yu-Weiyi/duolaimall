@@ -36,7 +36,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-product-service
-          image: yuweiyi/duolaimall-product-service:0.2.2-SNAPSHOT
+          image: yuweiyi/duolaimall-product-service:0.2.3-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -103,10 +103,11 @@ data:
           registerMbeans: true
           logLevel: DEBUG
     minio:
-      endpointUrl: http://8.137.62.188:19000/
-      accessKey: admin
-      secretKey: ${MINIO_PASSWORD}
-      bucketName: wayease-duolaimall
+      endpoint-url: http://8.137.62.188:19000
+      access-key: admin
+      secret-key: ${MINIO_PASSWORD}
+      bucket-name: wayease-duolaimall
+      file-prefix: wayease-duolaimall-file-
     logging:
       level:
         pers.wayease.duolaimall.product.mapper: debug
