@@ -1,8 +1,10 @@
 package pers.wayease.duolaimall.product;
 
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
@@ -14,6 +16,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2024-10-06 19:23
  */
 @SpringBootApplication
+@ComponentScan(basePackages = "pers.wayease.duolaimall")
+@MapperScan("pers.wayease.duolaimall.product.mapper")
 @Slf4j
 public class ProductServiceApplication {
 

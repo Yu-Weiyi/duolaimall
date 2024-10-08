@@ -11,7 +11,7 @@ import pers.wayease.duolaimall.common.model.BaseEntity;
  * @project duolaimall
  * @package pers.wayease.duolaimall.product.pojo.model
  * @name ThirdLevelCategory
- * @description Third level category class.
+ * @description Third level category PO class.
  * @since 2024-10-06 21:06
  */
 @TableName("third_level_category")

@@ -1,7 +1,6 @@
 package pers.wayease.duolaimall.product.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 import pers.wayease.duolaimall.product.pojo.model.FirstLevelCategory;
 
 /**
@@ -13,5 +12,4 @@ import pers.wayease.duolaimall.product.pojo.model.FirstLevelCategory;
  * @description First level category mapper interface.
  * @since 2024-10-06 20:30
  */
-@Mapper
 public interface FirstLevelCategoryMapper extends BaseMapper<FirstLevelCategory> {}

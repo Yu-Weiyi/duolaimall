@@ -10,16 +10,18 @@ import pers.wayease.duolaimall.common.model.BaseEntity;
  * @version 1.0
  * @project duolaimall
  * @package pers.wayease.duolaimall.product.pojo.model
- * @name FirstLevelCategory
- * @description First level category PO class.
- * @since 2024-10-06 21:01
+ * @name PlatformAttributeValue
+ * @description Platform attribute value PO class.
+ * @since 2024-10-08 10:57
  */
-@TableName("first_level_category")
+@TableName("platform_attr_value")
 @Data
-public class FirstLevelCategory extends BaseEntity {
+public class PlatformAttributeValue extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @TableField("name")
-    private String name;
+    @TableField("value_name")
+    private String valueName;
+    @TableField("attr_id")
+    private Long attrId;
 }

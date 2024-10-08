@@ -1,7 +1,6 @@
 package pers.wayease.duolaimall.product.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 import pers.wayease.duolaimall.product.pojo.model.ThirdLevelCategory;
 
 /**
@@ -11,7 +10,6 @@ import pers.wayease.duolaimall.product.pojo.model.ThirdLevelCategory;
  * @package pers.wayease.duolaimall.product.mapper
  * @name ThirdLevelCategoryMapper
  * @description Third level category mapper interface.
- * @since 2024-10-06 21:10
+ * @since 2024-10-06 20:30
  */
-@Mapper
 public interface ThirdLevelCategoryMapper extends BaseMapper<ThirdLevelCategory> {}
