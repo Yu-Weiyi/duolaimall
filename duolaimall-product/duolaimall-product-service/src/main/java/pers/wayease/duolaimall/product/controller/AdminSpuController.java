@@ -35,14 +35,12 @@ public class AdminSpuController {
 
     @GetMapping("/baseSaleAttrList")
     public Result<List<SaleAttributeInfoDto>> getBaseSaleAttrList() {
-
         List<SaleAttributeInfoDto> saleAttributeInfoDtoList = saleAttributeService.getSaleAttributeInfoList();
         return Result.ok(saleAttributeInfoDtoList);
     }
 
     @GetMapping("/{page}/{size}")
     public Result<SpuInfoPageDto> findSpuInfoPage(@PathVariable Integer page, @PathVariable Integer size, @RequestParam Long category3Id) {
-
         Page<SpuInfo> pageParam = new Page<>(page, size);
         SpuInfoPageDto spuInfoPageDto = spuService.getSpuInfoPage(pageParam, category3Id);
         return Result.ok(spuInfoPageDto);
@@ -50,21 +48,18 @@ public class AdminSpuController {
 
     @PostMapping("/saveSpuInfo")
     public Result<Void> saveSpuInfo(@RequestBody SpuInfoParam spuInfoParam) {
-
         spuService.saveSpuInfo(spuInfoParam);
         return Result.ok();
     }
 
     @GetMapping("/spuImageList/{spuId}")
     public Result<List<SpuImageDto>> getSpuImageList(@PathVariable Long spuId) {
-
         List<SpuImageDto> spuImageDtoList = spuService.getSpuImageList(spuId);
         return Result.ok(spuImageDtoList);
     }
 
     @GetMapping("/spuSaleAttrList/{spuId}")
     public Result<List<SpuSaleAttributeInfoDto>> getSaleAttributeInfoList(@PathVariable Long spuId) {
-
         List<SpuSaleAttributeInfoDto> spuSaleAttributeInfoDtoList = spuService.getSpuSaleAttributeList(spuId);
         return Result.ok(spuSaleAttributeInfoDtoList);
     }

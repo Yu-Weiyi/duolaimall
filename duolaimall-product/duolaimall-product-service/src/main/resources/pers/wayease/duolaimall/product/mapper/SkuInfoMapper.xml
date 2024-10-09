@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.wayease.duolaimall.product.mapper.SkuInfoMapper">
+
+    <sql id="skuInfoSql">
+        SELECT
+            si.id,
+            si.spu_id,
+            si.price,
+            si.sku_name,
+            si.sku_desc,
+            si.weight,
+            si.tm_id,
+            si.third_level_category_id,
+            si.sku_default_img,
+            si.is_sale,
+            sim.id AS sim_id,
+            sima.img_name,
+            sima.img_url,
+            sim.spu_img_id,
+            sim.is_default,
+            spav.id AS spav_id,
+            spav.attr_id,
+            spav.value_id,
+            ssav.id AS ssav_id,
+            ssav.spu_sale_attr_value_id
+        FROM
+            sku_info AS si
+                LEFT JOIN sku_image AS sim ON sim.sku_id = si.id AND sim.is_deleted = 0
+                LEFT JOIN spu_image AS sima ON sim.spu_img_id = sima.id AND sima.is_deleted = 0
+                LEFT JOIN sku_platform_attr_value AS spav ON spav.sku_id = si.id AND spav.is_deleted = 0
+                LEFT JOIN sku_sale_attr_value AS ssav ON ssav.sku_id = si.id AND ssav.is_deleted = 0
+    </sql>
+
+    <resultMap id="skuInfoResultMap" type="pers.wayease.duolaimall.product.pojo.model.SkuInfo">
+        <id column="id" property="id"/>
+        <result column="spu_id" property="spuId"/>
+        <result column="price" property="price"/>
+        <result column="sku_name" property="skuName"/>
+        <result column="sku_desc" property="skuDesc"/>
+        <result column="weight" property="weight"/>
+        <result column="tm_id" property="tmId"/>
+        <result column="third_level_category_id" property="thirdLevelCategoryId"/>
+        <result column="sku_default_img" property="skuDefaultImg"/>
+        <result column="is_sale" property="isSale"/>
+        <collection property="skuImageList" ofType="pers.wayease.duolaimall.product.pojo.model.SkuImage">
+            <id column="sim_id" property="id"/>
+            <result column="id" property="skuId"/>
+            <result column="img_name" property="imgName"/>
+            <result column="img_url" property="imgUrl"/>
+            <result column="spu_img_id" property="spuImgId"/>
+            <result column="is_default" property="isDefault"/>
+        </collection>
+        <collection property="skuPlatformAttributeValueList" ofType="pers.wayease.duolaimall.product.pojo.model.SkuPlatformAttributeValue">
+            <id column="spav_id" property="id"/>
+            <result column="attr_id" property="attrId"/>
+            <result column="value_id" property="valueId"/>
+            <result column="id" property="skuId"/>
+        </collection>
+        <collection property="skuSaleAttributeValueList" ofType="pers.wayease.duolaimall.product.pojo.model.SkuSaleAttributeValue">
+            <id column="ssav_id" property="id"/>
+            <result column="id" property="skuId"/>
+            <result column="spu_id" property="spuId"/>
+            <result column="spu_sale_attr_value_id" property="spuSaleAttrValueId"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectObjectById" resultMap="skuInfoResultMap">
+        <include refid="skuInfoSql"/>
+        WHERE si.id = #{skuInfoId}
+    </select>
+
+    <select id="selectObjectListByIdList" resultMap="skuInfoResultMap">
+        <include refid="skuInfoSql"/>
+        WHERE si.id IN <foreach collection="skuInfoIdList" item="skuInfoId" open="(" separator="," close=")"> #{skuInfoId} </foreach>
+    </select>
+</mapper>

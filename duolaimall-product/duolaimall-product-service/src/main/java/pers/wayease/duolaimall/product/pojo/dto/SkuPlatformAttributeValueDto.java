@@ -7,16 +7,15 @@ import lombok.Data;
  * @version 1.0
  * @project duolaimall
  * @package pers.wayease.duolaimall.product.pojo.dto
- * @name SpuSaleAttributeValueDto
- * @description SPU sale attribute value DTO class.
- * @since 2024-10-08 20:33
+ * @name SkuPlatformAttributeValueDto
+ * @description SKU platform attribute value DTO class.
+ * @since 2024-10-09 14:26
  */
 @Data
-public class SpuSaleAttributeValueDto {
+public class SkuPlatformAttributeValueDto {
 
     private Long id;
-    private Long spuId;
-    private Long spuSaleAttrId;
-    private String spuSaleAttrValueName;
-    String isChecked;
+    private Long attrId;
+    private Long valueId;
+    private Long skuId;
 }

@@ -5,10 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pers.wayease.duolaimall.product.pojo.dto.*;
 import pers.wayease.duolaimall.product.pojo.model.*;
-import pers.wayease.duolaimall.product.pojo.param.SpuImageParam;
-import pers.wayease.duolaimall.product.pojo.param.SpuInfoParam;
-import pers.wayease.duolaimall.product.pojo.param.SpuPosterParam;
-import pers.wayease.duolaimall.product.pojo.param.SpuSaleAttributeInfoParam;
+import pers.wayease.duolaimall.product.pojo.param.*;
 
 import java.util.List;
 
@@ -40,6 +37,12 @@ public interface SpuInfoConverter {
     List<SpuPoster> spuPosterParamList2PoList(List<SpuPosterParam> spuPosterParamList);
 
     List<SpuSaleAttributeInfo> spuSaleAttributeParamList2PoList(List<SpuSaleAttributeInfoParam> spuSaleAttributeInfoParamList);
+
+    @Mapping(source = "saleAttrValueName", target = "spuSaleAttrValueName")
+    @Mapping(source = "baseSaleAttrId", target = "spuSaleAttrId")
+    SpuSaleAttributeValue spuSaleAttributeValueParam2Po(SpuSaleAttributeValueParam spuSaleAttributeValueParam);
+
+    List<SpuSaleAttributeValue> spuSaleAttributeValueParamList2PoList(List<SpuSaleAttributeValueParam> spuSaleAttributeValueParamList);
 
     SpuInfoPageDto spuInfoPoPage2PageDto(Page<SpuInfo> spuInfoPage);
 
