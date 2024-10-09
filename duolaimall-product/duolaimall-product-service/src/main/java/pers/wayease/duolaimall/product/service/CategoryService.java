@@ -31,4 +31,6 @@ public interface CategoryService {
     void remove(Long thirdLevelCategoryId, Long trademarkId);
 
     CategoryHierarchyDto getCategortHierarchyByThirdLevelCategoryId(Long thirdLevelCategoryId);
+
+    List<FirstLevelCategoryNodeDto> getCategoryTreeList();
 }

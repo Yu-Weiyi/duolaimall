@@ -32,3 +32,4 @@ public class ProductServiceApplication {
 // TODO admin operation audit AOP
 // TODO transactional check
 // TODO react speed AOP
+// TODO redis cache AOP

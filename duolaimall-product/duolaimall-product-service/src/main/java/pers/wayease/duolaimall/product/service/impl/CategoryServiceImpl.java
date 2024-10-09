@@ -102,4 +102,10 @@ public class CategoryServiceImpl implements CategoryService {
         FirstLevelCategory firstLevelCategory = firstLevelCategoryMapper.selectById(secondLevelCategory.getFirstLevelCategoryId());
         return new CategoryHierarchyDto(firstLevelCategory, secondLevelCategory, thirdLevelCategory);
     }
+
+    @Override
+    public List<FirstLevelCategoryNodeDto> getCategoryTreeList() {
+        List<FirstLevelCategoryNodeDto> firstLevelCategoryNodeDtoList = firstLevelCategoryMapper.selectCategoryTreeList();
+        return firstLevelCategoryNodeDtoList;
+    }
 }

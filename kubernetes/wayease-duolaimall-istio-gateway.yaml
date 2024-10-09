@@ -50,9 +50,11 @@ spec:
               number: 8080
     - match:
         - uri:
-            prefix: "/admin/product"
+            prefix: "/index"
         - uri:
             prefix: "/goods"
+        - uri:
+            prefix: "/admin/product"
       corsPolicy:
         allowOrigin:
           - "*"

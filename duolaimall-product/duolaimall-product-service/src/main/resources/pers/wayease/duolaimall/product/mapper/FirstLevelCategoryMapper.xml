@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.wayease.duolaimall.product.mapper.FirstLevelCategoryMapper">
+
+    <resultMap id="categoryTreeResultMap" type="pers.wayease.duolaimall.product.pojo.dto.FirstLevelCategoryNodeDto">
+        <id column="fid" property="categoryId"/>
+        <result column="fn" property="categoryName"/>
+        <collection property="categoryChild" ofType="pers.wayease.duolaimall.product.pojo.dto.SecondLevelCategoryNodeDto">
+            <id column="sid" property="categoryId"/>
+            <result column="sn" property="categoryName"/>
+            <collection property="categoryChild" ofType="pers.wayease.duolaimall.product.pojo.dto.ThirdLevelCategoryNodeDto">
+                <id column="tid" property="categoryId"/>
+                <result column="tn" property="categoryName"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="selectCategoryTreeList" resultMap="categoryTreeResultMap">
+        SELECT
+            f.id AS fid,
+            f.`name` AS fn,
+            s.id AS sid,
+            s.`name` AS sn,
+            t.id AS tid,
+            t.`name` AS tn
+        FROM
+            first_level_category AS f
+                LEFT JOIN second_level_category AS s ON s.first_level_category_id = f.id
+                LEFT JOIN third_level_category AS t ON t.second_level_category_id = s.id
+        ORDER BY
+            fid,
+            sid,
+            tid
+    </select>
+</mapper>
