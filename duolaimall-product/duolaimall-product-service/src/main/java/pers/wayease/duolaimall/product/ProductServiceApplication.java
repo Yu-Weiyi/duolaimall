@@ -29,3 +29,5 @@ public class ProductServiceApplication {
 
 // TODO add custom banner with project info, svc info, pod info and so on
 // TODO add prometheus metrics
+// TODO admin operation audit AOP
+// TODO transactional check

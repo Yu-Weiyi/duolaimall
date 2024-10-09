@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.wayease.duolaimall.product.mapper.SpuInfoMapper">
+
+    <resultMap id="spuInfoResultMap" type="pers.wayease.duolaimall.product.pojo.model.SpuInfo">
+        <id column="id" property="id"/>
+        <result column="spu_name" property="spuName"/>
+        <result column="description" property="description"/>
+        <result column="third_level_category_id" property="thirdLevelCategoryId"/>
+        <result column="tm_id" property="tmId"/>
+        <collection property="spuSaleAttributeInfoList" ofType="pers.wayease.duolaimall.product.pojo.model.SpuSaleAttributeInfo">
+            <result column="ssai_id" property="spuId"/>
+            <result column="sale_attr_id" property="saleAttrId"/>
+            <result column="sale_attr_name" property="saleAttrName"/>
+            <association property="spuSaleAttrValueList" javaType="java.util.List" resultSet="pers.wayease.duolaimall.product.pojo.model.SpuSaleAttributeValue"/>
+        </collection>
+        <collection property="spuImageList" ofType="pers.wayease.duolaimall.product.pojo.model.SpuImage">
+            <result column="sim_id" property="id"/>
+            <result column="image_name" property="imgName"/>
+            <result column="image_url" property="imgUrl"/>
+        </collection>
+        <collection property="spuPosterList" ofType="pers.wayease.duolaimall.product.pojo.model.SpuPoster">
+            <result column="sp_id" property="id"/>
+            <result column="poster_name" property="imgName"/>
+            <result column="poster_url" property="imgUrl"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectListByspuInfoIdList" resultMap="spuInfoResultMap">
+        SELECT
+        si.id,
+        si.spu_name,
+        si.description,
+        si.third_level_category_id,
+        si.tm_id,
+        ssai.id AS ssai_id,
+        ssai.sale_attr_id,
+        ssai.sale_attr_name,
+        ssav.spu_sale_attr_value_name,
+        sim.id AS sim_id,
+        sim.img_name AS image_name,
+        sim.img_url AS image_url,
+        sp.id AS sp_id,
+        sp.img_name AS poster_name,
+        sp.img_url AS poster_url
+        FROM
+        spu_info AS si
+        LEFT JOIN spu_sale_attr_info AS ssai ON ssai.spu_id = si.id
+        LEFT JOIN spu_sale_attr_value AS ssav ON ssav.spu_id = si.id
+        AND ssav.spu_sale_attr_id = ssai.id
+        LEFT JOIN spu_image AS sim ON sim.spu_id = si.id
+        LEFT JOIN spu_poster AS sp ON sp.spu_id = si.id
+        WHERE
+        si.id IN <foreach collection="spuInfoIdList" item="spuInfoId" open="(" separator="," close=")"> #{spuInfoId} </foreach>
+        AND ( ssai.is_deleted IS NULL OR ssai.is_deleted = 0 )
+        AND ( ssav.is_deleted IS NULL OR ssav.is_deleted = 0 )
+        AND ( sim.is_deleted IS NULL OR sim.is_deleted = 0 )
+        AND ( sp.is_deleted IS NULL OR sp.is_deleted = 0 )
+    </select>
+</mapper>
