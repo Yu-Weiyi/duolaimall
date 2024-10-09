@@ -1,4 +1,4 @@
-package pers.wayease.duolaimall.product.controller;
+package pers.wayease.duolaimall.product.controller.admin;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +19,14 @@ import java.util.List;
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
  * @version 1.0
  * @project duolaimall
- * @package pers.wayease.duolaimall.product.controller
- * @name AdminSpuController
- * @description Admin SPU controller class.
+ * @package pers.wayease.duolaimall.product.controller.admin
+ * @name SpuController
+ * @description SPU controller class.
  * @since 2024-10-08 20:07
  */
 @RestController
 @RequestMapping("/admin/product")
-public class AdminSpuController {
+public class SpuController {
 
     @Autowired
     private SpuService spuService;

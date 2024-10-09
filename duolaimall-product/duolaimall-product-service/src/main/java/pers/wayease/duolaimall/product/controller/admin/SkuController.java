@@ -1,4 +1,4 @@
-package pers.wayease.duolaimall.product.controller;
+package pers.wayease.duolaimall.product.controller.admin;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +13,14 @@ import pers.wayease.duolaimall.product.service.SkuService;
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
  * @version 1.0
  * @project duolaimall
- * @package pers.wayease.duolaimall.product.controller
- * @name AdminSkuController
- * @description Admin SKU controller class.
+ * @package pers.wayease.duolaimall.product.controller.admin
+ * @name SkuController
+ * @description SKU controller class.
  * @since 2024-10-09 14:11
  */
 @RestController
 @RequestMapping("/admin/product")
-public class AdminSkuController {
+public class SkuController {
 
     @Autowired
     private SkuService skuService;

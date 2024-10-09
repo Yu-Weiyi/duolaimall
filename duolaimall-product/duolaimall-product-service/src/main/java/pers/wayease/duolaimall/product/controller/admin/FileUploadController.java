@@ -1,4 +1,4 @@
-package pers.wayease.duolaimall.product.controller;
+package pers.wayease.duolaimall.product.controller.admin;
 
 import io.minio.errors.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +17,14 @@ import java.security.NoSuchAlgorithmException;
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
  * @version 1.0
  * @project duolaimall
- * @package pers.wayease.duolaimall.product.controller
- * @name AdminFileUploadController
- * @description Admin file upload controller class.
+ * @package pers.wayease.duolaimall.product.controller.admin
+ * @name FileUploadController
+ * @description File upload controller class.
  * @since 2024-10-08 15:31
  */
 @RestController
 @RequestMapping("/admin/product")
-public class AdminFileUploadController {
+public class FileUploadController {
 
     @Autowired
     private FileService fileService;

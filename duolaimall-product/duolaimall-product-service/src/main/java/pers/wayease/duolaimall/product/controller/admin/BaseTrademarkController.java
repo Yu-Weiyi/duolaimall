@@ -1,4 +1,4 @@
-package pers.wayease.duolaimall.product.controller;
+package pers.wayease.duolaimall.product.controller.admin;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +14,14 @@ import pers.wayease.duolaimall.product.service.TrademarkService;
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
  * @version 1.0
  * @project duolaimall
- * @package pers.wayease.duolaimall.product.controller
- * @name AdminBaseTrademarkController
- * @description Admin base trademark controller class.
+ * @package pers.wayease.duolaimall.product.controller.admin
+ * @name BaseTrademarkController
+ * @description Base trademark controller class.
  * @since 2024-10-08 16:52
  */
 @RestController
 @RequestMapping("/admin/product/baseTrademark")
-public class AdminBaseTrademarkController {
+public class BaseTrademarkController {
 
     @Autowired
     private TrademarkService trademarkService;

@@ -1,4 +1,4 @@
-package pers.wayease.duolaimall.product.controller;
+package pers.wayease.duolaimall.product.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +14,14 @@ import java.util.List;
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
  * @version 1.0
  * @project duolaimall
- * @package pers.wayease.duolaimall.product.controller
- * @name AdminPlatformAttributeController
- * @description Admin platform attribute controller class.
+ * @package pers.wayease.duolaimall.product.controller.admin
+ * @name PlatformAttributeController
+ * @description Platform attribute controller class.
  * @since 2024-10-08 09:10
  */
 @RestController
 @RequestMapping("/admin/product")
-public class AdminPlatformAttributeController {
+public class PlatformAttributeController {
 
     @Autowired
     private PlatformAttributeService platformAttributeService;

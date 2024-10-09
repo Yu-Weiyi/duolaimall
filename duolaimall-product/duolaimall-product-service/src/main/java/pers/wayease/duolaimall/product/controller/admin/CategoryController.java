@@ -1,4 +1,4 @@
-package pers.wayease.duolaimall.product.controller;
+package pers.wayease.duolaimall.product.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,14 +17,14 @@ import java.util.List;
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
  * @version 0.1
  * @project duolaimall
- * @package pers.wayease.duolaimall.product.controller
- * @name AdminCategoryController
- * @description Admin category controller class.
+ * @package pers.wayease.duolaimall.product.controller.admin
+ * @name CategoryController
+ * @description Category controller class.
  * @since 2024-10-06 20:04
  */
 @RestController
 @RequestMapping("/admin/product")
-public class AdminCategoryController {
+public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;

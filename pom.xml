@@ -23,7 +23,7 @@
         <module>duolaimall-product</module>
     </modules>
     <properties>
-        <revision>0.2.16</revision>
+        <revision>0.2.17</revision>
         <changelist>SNAPSHOT</changelist>
 
         <java.version>17</java.version>
