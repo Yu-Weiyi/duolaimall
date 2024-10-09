@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pers.wayease.duolaimall.product.pojo.dto.*;
+import pers.wayease.duolaimall.product.pojo.dto.page.SpuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.model.*;
 import pers.wayease.duolaimall.product.pojo.param.*;
 

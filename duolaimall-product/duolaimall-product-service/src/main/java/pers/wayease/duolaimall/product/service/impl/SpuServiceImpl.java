@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pers.wayease.duolaimall.product.converter.SpuInfoConverter;
 import pers.wayease.duolaimall.product.mapper.*;
 import pers.wayease.duolaimall.product.pojo.dto.SpuImageDto;
-import pers.wayease.duolaimall.product.pojo.dto.SpuInfoPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.SpuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.dto.SpuSaleAttributeInfoDto;
 import pers.wayease.duolaimall.product.pojo.model.SpuImage;
 import pers.wayease.duolaimall.product.pojo.model.SpuInfo;

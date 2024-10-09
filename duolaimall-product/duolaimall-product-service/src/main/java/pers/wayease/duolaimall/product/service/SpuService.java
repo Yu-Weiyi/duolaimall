@@ -2,7 +2,7 @@ package pers.wayease.duolaimall.product.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import pers.wayease.duolaimall.product.pojo.dto.SpuImageDto;
-import pers.wayease.duolaimall.product.pojo.dto.SpuInfoPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.SpuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.dto.SpuSaleAttributeInfoDto;
 import pers.wayease.duolaimall.product.pojo.model.SpuInfo;
 import pers.wayease.duolaimall.product.pojo.param.SpuInfoParam;

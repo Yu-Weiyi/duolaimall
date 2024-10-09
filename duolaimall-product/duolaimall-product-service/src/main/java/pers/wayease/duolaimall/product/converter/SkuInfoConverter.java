@@ -3,7 +3,7 @@ package pers.wayease.duolaimall.product.converter;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import pers.wayease.duolaimall.product.pojo.dto.SkuInfoPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.SkuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.model.SkuImage;
 import pers.wayease.duolaimall.product.pojo.model.SkuInfo;
 import pers.wayease.duolaimall.product.pojo.model.SkuPlatformAttributeValue;

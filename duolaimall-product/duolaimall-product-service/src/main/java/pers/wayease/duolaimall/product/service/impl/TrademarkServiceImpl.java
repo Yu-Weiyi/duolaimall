@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import pers.wayease.duolaimall.product.converter.TrademarkConverter;
 import pers.wayease.duolaimall.product.mapper.TrademarkMapper;
 import pers.wayease.duolaimall.product.pojo.dto.TrademarkDto;
-import pers.wayease.duolaimall.product.pojo.dto.TrademarkPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.TrademarkPageDto;
 import pers.wayease.duolaimall.product.pojo.model.Trademark;
 import pers.wayease.duolaimall.product.pojo.param.TrademarkParam;
 import pers.wayease.duolaimall.product.service.TrademarkService;

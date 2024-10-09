@@ -2,7 +2,7 @@ package pers.wayease.duolaimall.product.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import pers.wayease.duolaimall.product.pojo.dto.TrademarkDto;
-import pers.wayease.duolaimall.product.pojo.dto.TrademarkPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.TrademarkPageDto;
 import pers.wayease.duolaimall.product.pojo.model.Trademark;
 import pers.wayease.duolaimall.product.pojo.param.TrademarkParam;
 

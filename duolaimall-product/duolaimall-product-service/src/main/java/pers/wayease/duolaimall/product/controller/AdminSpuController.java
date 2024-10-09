@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pers.wayease.duolaimall.common.result.Result;
 import pers.wayease.duolaimall.product.pojo.dto.SaleAttributeInfoDto;
 import pers.wayease.duolaimall.product.pojo.dto.SpuImageDto;
-import pers.wayease.duolaimall.product.pojo.dto.SpuInfoPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.SpuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.dto.SpuSaleAttributeInfoDto;
 import pers.wayease.duolaimall.product.pojo.model.SpuInfo;
 import pers.wayease.duolaimall.product.pojo.param.SpuInfoParam;

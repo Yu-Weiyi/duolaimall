@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pers.wayease.duolaimall.common.result.Result;
-import pers.wayease.duolaimall.product.pojo.dto.SkuInfoPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.SkuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.model.SkuInfo;
 import pers.wayease.duolaimall.product.pojo.param.SkuInfoParam;
 import pers.wayease.duolaimall.product.service.SkuService;

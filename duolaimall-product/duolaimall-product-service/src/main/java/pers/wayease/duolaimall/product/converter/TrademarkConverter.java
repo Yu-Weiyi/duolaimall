@@ -3,7 +3,7 @@ package pers.wayease.duolaimall.product.converter;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.mapstruct.Mapper;
 import pers.wayease.duolaimall.product.pojo.dto.TrademarkDto;
-import pers.wayease.duolaimall.product.pojo.dto.TrademarkPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.TrademarkPageDto;
 import pers.wayease.duolaimall.product.pojo.model.Trademark;
 import pers.wayease.duolaimall.product.pojo.param.TrademarkParam;
 

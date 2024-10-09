@@ -1,7 +1,7 @@
 package pers.wayease.duolaimall.product.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import pers.wayease.duolaimall.product.pojo.dto.SkuInfoPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.SkuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.model.SkuInfo;
 import pers.wayease.duolaimall.product.pojo.param.SkuInfoParam;
 

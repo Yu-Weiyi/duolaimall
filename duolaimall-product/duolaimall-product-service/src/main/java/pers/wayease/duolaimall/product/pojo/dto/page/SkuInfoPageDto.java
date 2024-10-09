@@ -1,16 +1,17 @@
-package pers.wayease.duolaimall.product.pojo.dto;
+package pers.wayease.duolaimall.product.pojo.dto.page;
 
 import lombok.Data;
 import pers.wayease.duolaimall.common.pojo.dto.BasePageDto;
+import pers.wayease.duolaimall.product.pojo.dto.SkuInfoDto;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
  * @version 1.0
  * @project duolaimall
  * @package pers.wayease.duolaimall.product.pojo.dto
- * @name SpuInfoPageDto
- * @description SPU info page DTO class.
- * @since 2024-10-08 20:28
+ * @name SkuInfoPageDto
+ * @description SKU info page DTO class.
+ * @since 2024-10-09 14:20
  */
 @Data
-public class SpuInfoPageDto extends BasePageDto<SpuInfoDto> {}
+public class SkuInfoPageDto extends BasePageDto<SkuInfoDto> {}

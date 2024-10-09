@@ -10,7 +10,7 @@ import pers.wayease.duolaimall.product.mapper.SkuImageMapper;
 import pers.wayease.duolaimall.product.mapper.SkuInfoMapper;
 import pers.wayease.duolaimall.product.mapper.SkuPlatformAttributeValueMapper;
 import pers.wayease.duolaimall.product.mapper.SkuSaleAttributeValueMapper;
-import pers.wayease.duolaimall.product.pojo.dto.SkuInfoPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.SkuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.model.SkuInfo;
 import pers.wayease.duolaimall.product.pojo.param.SkuInfoParam;
 import pers.wayease.duolaimall.product.service.SkuService;
