@@ -2,12 +2,14 @@ package pers.wayease.duolaimall.product.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import pers.wayease.duolaimall.product.pojo.dto.SpuImageDto;
-import pers.wayease.duolaimall.product.pojo.dto.page.SpuInfoPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.SpuPosterDto;
 import pers.wayease.duolaimall.product.pojo.dto.SpuSaleAttributeInfoDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.SpuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.model.SpuInfo;
 import pers.wayease.duolaimall.product.pojo.param.SpuInfoParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
@@ -27,4 +29,8 @@ public interface SpuService {
     List<SpuImageDto> getSpuImageList(Long spuId);
 
     List<SpuSaleAttributeInfoDto> getSpuSaleAttributeList(Long spuId);
+
+    Map<String, Long> getSkuSaleAttributeMap(Long spuId);
+
+    List<SpuPosterDto> getSpuPosterBySpuId(Long spuId);
 }

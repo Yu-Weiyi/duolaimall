@@ -35,7 +35,7 @@
         AND ( ssav.is_deleted IS NULL OR ssav.is_deleted = 0 )
     </select>
 
-    <select id="selectCheckedObjectBySkuId" resultMap="spuSaleAttributeInfoResultMap">
+    <select id="selectCheckedObject" resultMap="spuSaleAttributeInfoResultMap">
         SELECT
         ssai.id AS iid,
         ssai.spu_id,

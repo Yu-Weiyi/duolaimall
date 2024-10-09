@@ -7,16 +7,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.wayease.duolaimall.product.converter.SpuInfoConverter;
 import pers.wayease.duolaimall.product.mapper.*;
+import pers.wayease.duolaimall.product.pojo.dto.SkuSaleAttributeValuePermutationDto;
 import pers.wayease.duolaimall.product.pojo.dto.SpuImageDto;
-import pers.wayease.duolaimall.product.pojo.dto.page.SpuInfoPageDto;
+import pers.wayease.duolaimall.product.pojo.dto.SpuPosterDto;
 import pers.wayease.duolaimall.product.pojo.dto.SpuSaleAttributeInfoDto;
+import pers.wayease.duolaimall.product.pojo.dto.page.SpuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.model.SpuImage;
 import pers.wayease.duolaimall.product.pojo.model.SpuInfo;
+import pers.wayease.duolaimall.product.pojo.model.SpuPoster;
 import pers.wayease.duolaimall.product.pojo.model.SpuSaleAttributeInfo;
 import pers.wayease.duolaimall.product.pojo.param.SpuInfoParam;
 import pers.wayease.duolaimall.product.service.SpuService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
@@ -43,6 +48,8 @@ public class SpuServiceImpl implements SpuService {
 
     @Autowired
     private SpuInfoConverter spuInfoConverter;
+    @Autowired
+    private SkuSaleAttributeValueMapper skuSaleAttributeValueMapper;
 
     @Override
     public SpuInfoPageDto getSpuInfoPage(Page<SpuInfo> pageParam, Long thirdLevelCategoryId) {
@@ -98,6 +105,25 @@ public class SpuServiceImpl implements SpuService {
     @Override
     public List<SpuSaleAttributeInfoDto> getSpuSaleAttributeList(Long spuId) {
         List<SpuSaleAttributeInfo> spuSaleAttributeInfoList = spuSaleAttributeInfoMapper.selectObjectListBySpuId(spuId);
-        return spuInfoConverter.spuSaleAttributePoList2DtoList(spuSaleAttributeInfoList);
+        return spuInfoConverter.spuSaleAttributeInfoPoList2DtoList(spuSaleAttributeInfoList);
+    }
+
+    @Override
+    public Map<String, Long> getSkuSaleAttributeMap(Long spuId) {
+        List<SkuSaleAttributeValuePermutationDto> skuSaleAttributeValuePermutationDtoList = skuSaleAttributeValueMapper.selectPermutationObjectBySpuId(spuId);
+        HashMap<String, Long> sluSaleAttributeValueMap = new HashMap<>();
+        skuSaleAttributeValuePermutationDtoList.forEach(skuSaleAttributeValuePermutationDto -> {
+            sluSaleAttributeValueMap.put(skuSaleAttributeValuePermutationDto.getSkuSaleAttributeValuePermutation(), skuSaleAttributeValuePermutationDto.getSkuId());
+        });
+        return sluSaleAttributeValueMap;
+    }
+
+    @Override
+    public List<SpuPosterDto> getSpuPosterBySpuId(Long spuId) {
+        LambdaQueryWrapper<SpuPoster> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper
+                .eq(SpuPoster::getSpuId, spuId);
+        List<SpuPoster> spuPosterList = spuPosterMapper.selectList(lambdaQueryWrapper);
+        return spuInfoConverter.spuPosterPoList2DtoList(spuPosterList);
     }
 }

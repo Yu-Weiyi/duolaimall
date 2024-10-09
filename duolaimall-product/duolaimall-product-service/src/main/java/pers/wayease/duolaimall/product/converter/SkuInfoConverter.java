@@ -3,6 +3,7 @@ package pers.wayease.duolaimall.product.converter;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import pers.wayease.duolaimall.product.pojo.dto.SkuInfoDto;
 import pers.wayease.duolaimall.product.pojo.dto.page.SkuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.model.SkuImage;
 import pers.wayease.duolaimall.product.pojo.model.SkuInfo;
@@ -44,6 +45,8 @@ public interface SkuInfoConverter {
     SkuSaleAttributeValue skuSaleAttributeValueParam2Po(SkuSaleAttributeValueParam skuSaleAttributeValueParam);
 
     List<SkuSaleAttributeValue> skuSaleAttributeValueParamList2PoList(List<SkuSaleAttributeValueParam> skuSaleAttributeValueParamList);
+
+    SkuInfoDto skuInfoPo2Dto(SkuInfo skuInfo);
 
     SkuInfoPageDto skuInfoPoPage2PageDto(Page<SkuInfo> skuInfoPage);
 }

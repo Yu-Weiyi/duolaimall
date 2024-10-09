@@ -31,3 +31,4 @@ public class ProductServiceApplication {
 // TODO add prometheus metrics
 // TODO admin operation audit AOP
 // TODO transactional check
+// TODO react speed AOP

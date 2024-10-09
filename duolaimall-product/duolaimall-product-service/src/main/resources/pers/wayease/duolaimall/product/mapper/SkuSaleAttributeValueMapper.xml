@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.wayease.duolaimall.product.mapper.SkuSaleAttributeValueMapper">
+
+    <select id="selectPermutationObjectBySpuId" resultType="pers.wayease.duolaimall.product.pojo.dto.SkuSaleAttributeValuePermutationDto">
+        SELECT
+            GROUP_CONCAT( spu_sale_attr_value_id ORDER BY spusai.sale_attr_id SEPARATOR '|' ) AS skuSaleAttributeValuePermutation,
+            sku_id AS skuId
+        FROM
+            sku_sale_attr_value AS skusav
+                INNER JOIN sku_info AS si ON skusav.sku_id = si.id
+                AND si.is_sale = 1
+                AND skusav.is_deleted = 0
+                AND si.is_deleted = 0
+                INNER JOIN spu_sale_attr_value AS spusav ON spusav.id = skusav.spu_sale_attr_value_id
+                INNER JOIN spu_sale_attr_info AS spusai ON spusav.spu_sale_attr_id = spusai.id
+        WHERE
+            skusav.spu_id = #{spuId}
+        GROUP BY
+            skusav.sku_id
+    </select>
+</mapper>

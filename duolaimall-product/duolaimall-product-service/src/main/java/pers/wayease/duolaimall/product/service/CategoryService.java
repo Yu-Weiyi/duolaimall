@@ -1,9 +1,6 @@
 package pers.wayease.duolaimall.product.service;
 
-import pers.wayease.duolaimall.product.pojo.dto.FirstLevelCategoryDto;
-import pers.wayease.duolaimall.product.pojo.dto.SecondLevelCategoryDto;
-import pers.wayease.duolaimall.product.pojo.dto.ThirdLevelCategoryDto;
-import pers.wayease.duolaimall.product.pojo.dto.TrademarkDto;
+import pers.wayease.duolaimall.product.pojo.dto.*;
 import pers.wayease.duolaimall.product.pojo.param.CategoryTrademarkParam;
 
 import java.util.List;
@@ -32,4 +29,6 @@ public interface CategoryService {
     List<TrademarkDto> findUnLinkedTrademarkList(Long thirdLevelCategoryId);
 
     void remove(Long thirdLevelCategoryId, Long trademarkId);
+
+    CategoryHierarchyDto getCategortHierarchyByThirdLevelCategoryId(Long thirdLevelCategoryId);
 }

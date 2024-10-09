@@ -10,10 +10,7 @@ import pers.wayease.duolaimall.product.mapper.CategoryTrademarkMapper;
 import pers.wayease.duolaimall.product.mapper.FirstLevelCategoryMapper;
 import pers.wayease.duolaimall.product.mapper.SecondLevelCategoryMapper;
 import pers.wayease.duolaimall.product.mapper.ThirdLevelCategoryMapper;
-import pers.wayease.duolaimall.product.pojo.dto.FirstLevelCategoryDto;
-import pers.wayease.duolaimall.product.pojo.dto.SecondLevelCategoryDto;
-import pers.wayease.duolaimall.product.pojo.dto.ThirdLevelCategoryDto;
-import pers.wayease.duolaimall.product.pojo.dto.TrademarkDto;
+import pers.wayease.duolaimall.product.pojo.dto.*;
 import pers.wayease.duolaimall.product.pojo.model.*;
 import pers.wayease.duolaimall.product.pojo.param.CategoryTrademarkParam;
 import pers.wayease.duolaimall.product.service.CategoryService;
@@ -96,5 +93,13 @@ public class CategoryServiceImpl implements CategoryService {
                 .eq(CategoryTrademark::getThirdLevelCategoryId, thirdLevelCategoryId)
                 .eq(CategoryTrademark::getTrademarkId, trademarkId);
         categoryTrademarkMapper.delete(lambdaUpdateWrapper);
+    }
+
+    @Override
+    public CategoryHierarchyDto getCategortHierarchyByThirdLevelCategoryId(Long thirdLevelCategoryId) {
+        ThirdLevelCategory thirdLevelCategory = thirdLevelCategoryMapper.selectById(thirdLevelCategoryId);
+        SecondLevelCategory secondLevelCategory = secondLevelCategoryMapper.selectById(thirdLevelCategory.getSecondLevelCategoryId());
+        FirstLevelCategory firstLevelCategory = firstLevelCategoryMapper.selectById(secondLevelCategory.getFirstLevelCategoryId());
+        return new CategoryHierarchyDto(firstLevelCategory, secondLevelCategory, thirdLevelCategory);
     }
 }

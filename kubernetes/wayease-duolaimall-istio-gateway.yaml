@@ -51,6 +51,8 @@ spec:
     - match:
         - uri:
             prefix: "/admin/product"
+        - uri:
+            prefix: "/goods"
       corsPolicy:
         allowOrigin:
           - "*"

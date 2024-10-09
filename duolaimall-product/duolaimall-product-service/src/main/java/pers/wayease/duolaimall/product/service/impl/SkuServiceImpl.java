@@ -5,16 +5,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pers.wayease.duolaimall.product.converter.PlatformAttributeInfoConverter;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
-import pers.wayease.duolaimall.product.mapper.SkuImageMapper;
-import pers.wayease.duolaimall.product.mapper.SkuInfoMapper;
-import pers.wayease.duolaimall.product.mapper.SkuPlatformAttributeValueMapper;
-import pers.wayease.duolaimall.product.mapper.SkuSaleAttributeValueMapper;
+import pers.wayease.duolaimall.product.converter.SpuInfoConverter;
+import pers.wayease.duolaimall.product.mapper.*;
+import pers.wayease.duolaimall.product.pojo.dto.PlatformAttributeInfoDto;
+import pers.wayease.duolaimall.product.pojo.dto.SpuSaleAttributeInfoDto;
 import pers.wayease.duolaimall.product.pojo.dto.page.SkuInfoPageDto;
-import pers.wayease.duolaimall.product.pojo.model.SkuInfo;
+import pers.wayease.duolaimall.product.pojo.model.*;
 import pers.wayease.duolaimall.product.pojo.param.SkuInfoParam;
 import pers.wayease.duolaimall.product.service.SkuService;
 
+import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,9 +40,19 @@ public class SkuServiceImpl implements SkuService {
     private SkuPlatformAttributeValueMapper skuPlatformAttributeValueMapper;
     @Autowired
     private SkuSaleAttributeValueMapper skuSaleAttributeValueMapper;
+    @Autowired
+    private SpuSaleAttributeInfoMapper spuSaleAttributeInfoMapper;
+    @Autowired
+    private PlatformAttributeInfoMapper platformAttributeInfoMapper;
+    @Autowired
+    private PlatformAttributeValueMapper platformAttributeValueMapper;
 
     @Autowired
     private SkuInfoConverter skuInfoConverter;
+    @Autowired
+    private SpuInfoConverter spuInfoConverter;
+    @Autowired
+    private PlatformAttributeInfoConverter platformAttributeInfoConverter;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -89,5 +102,36 @@ public class SkuServiceImpl implements SkuService {
         skuInfoUpdate.setId(skuId);
         skuInfoUpdate.setIsSale(isSale ? 1 : 0);
         skuInfoMapper.updateById(skuInfoUpdate);
+    }
+
+    @Override
+    public BigDecimal getPrice(Long skuId) {
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        return skuInfo.getPrice();
+    }
+
+    @Override
+    public List<SpuSaleAttributeInfoDto> getSpuSaleAttributeInfoList(Long spuId, Long skuId) {
+        List<SpuSaleAttributeInfo> spuSaleAttributeInfoList = spuSaleAttributeInfoMapper.selectCheckedObject(spuId, skuId);
+        return spuInfoConverter.spuSaleAttributeInfoPoList2DtoList(spuSaleAttributeInfoList);
+    }
+
+    @Override
+    public List<PlatformAttributeInfoDto> getPlatformAttrInfoBySkuId(Long skuId) {
+        LambdaQueryWrapper<SkuPlatformAttributeValue> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper
+                .eq(SkuPlatformAttributeValue::getSkuId, skuId);
+        List<SkuPlatformAttributeValue> skuPlatformAttributeValueList = skuPlatformAttributeValueMapper.selectList(lambdaQueryWrapper);
+        List<PlatformAttributeInfo> platformAttributeInfoList = skuPlatformAttributeValueList.stream()
+                .map(skuPlatformAttributeValue -> {
+                    Long attributeId = skuPlatformAttributeValue.getAttrId();
+                    Long valueId = skuPlatformAttributeValue.getValueId();
+                    PlatformAttributeInfo platformAttributeInfo = platformAttributeInfoMapper.selectById(attributeId);
+                    PlatformAttributeValue platformAttributeValue = platformAttributeValueMapper.selectById(valueId);
+                    platformAttributeInfo.setAttrValueList(Collections.singletonList(platformAttributeValue));
+                    return platformAttributeInfo;
+                })
+                .toList();
+        return platformAttributeInfoConverter.platformAttributeInfoPoList2DtoList(platformAttributeInfoList);
     }
 }
