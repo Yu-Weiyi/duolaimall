@@ -21,9 +21,10 @@
         <module>duolaimall-common</module>
         <module>duolaimall-email</module>
         <module>duolaimall-product</module>
+        <module>duolaimall-search</module>
     </modules>
     <properties>
-        <revision>0.2.19</revision>
+        <revision>0.3.0</revision>
         <changelist>SNAPSHOT</changelist>
 
         <java.version>17</java.version>

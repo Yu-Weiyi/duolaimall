@@ -1,0 +1,76 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wayease-duolaimall-search-service
+  namespace: wayease-duolaimall
+  labels:
+    app: wayease-duolaimall-search-service
+spec:
+  selector:
+    app: wayease-duolaimall-search-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wayease-duolaimall-search-service-deployment
+  namespace: wayease-duolaimall
+  labels:
+    app: wayease-duolaimall-search-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wayease-duolaimall-search-service
+  template:
+    metadata:
+      name: wayease-duolaimall-search-service-deployment
+      labels:
+        app: wayease-duolaimall-search-service
+    spec:
+      serviceAccountName: wayease-duolaimall-serviceaccount
+      containers:
+        - name: wayease-duolaimall-search-service
+          image: yuweiyi/duolaimall-search-service:0.2.19-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: common-config-volume
+              mountPath: /app/config/application-common.yaml
+              subPath: application-common.yaml
+            - name: dev-config-volume
+              mountPath: /app/config/application-dev.yaml
+              subPath: application-dev.yaml
+      volumes:
+        - name: common-config-volume
+          configMap:
+            name: wayease-duolaimall-common-dev-configmap
+            items:
+              - key: application-common.yaml
+                path: application-common.yaml
+        - name: dev-config-volume
+          configMap:
+            name: wayease-duolaimall-search-service-dev-configmap
+            items:
+              - key: application-dev.yaml
+                path: application-dev.yaml
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wayease-duolaimall-search-service-dev-configmap
+  namespace: wayease-duolaimall
+data:
+  application-dev.yaml: |
+    spring:
+      elasticsearch:
+        rest:
+          uris: http://wayease-elasticsearch.wayease-middleware.svc.cluster.local:9200

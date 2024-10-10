@@ -27,9 +27,9 @@ public class ProductServiceApplication {
     }
 }
 
-// TODO add custom banner with project info, svc info, pod info and so on
-// TODO add prometheus metrics
-// TODO admin operation audit AOP
-// TODO transactional check
-// TODO react speed AOP
 // TODO redis cache AOP
+// TODO react speed AOP
+// TODO add custom banner with project info, svc info, pod info and so on
+// TODO transactional check
+// TODO admin operation audit AOP
+// TODO add prometheus metrics
