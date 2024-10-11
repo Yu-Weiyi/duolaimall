@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
- * @version 0.1
+ * @version 1.0
  * @project duolaimall
  * @package pers.wayease.duolaimall.product.service.impl
  * @name SkuServiceImpl
@@ -109,7 +109,7 @@ public class SkuServiceImpl implements SkuService {
 
         searchServiceClient.upperGoods(skuId);
 
-        RBloomFilter<Object> rBloomFilter = redissonClient.getBloomFilter(RedisConstant.SKU_BLOOM_FILTER_PREFIX);
+        RBloomFilter<Long> rBloomFilter = redissonClient.getBloomFilter(RedisConstant.SKU_BLOOM_FILTER);
         rBloomFilter.add(skuId);
     }
 

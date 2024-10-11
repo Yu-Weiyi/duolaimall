@@ -18,15 +18,30 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: wayease-duolaimall-configmap-reader-role
+  name: wayease-duolaimall-role
   namespace: wayease-duolaimall
 rules:
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    verbs: ["get", "list"]
-  - apiGroups: [""]
-    resources: ["secrets"]
-    verbs: ["get", "list"]
+  - apiGroups: [ "" ]
+    resources: [ "configmaps", "secrets" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "" ]
+    resources: [ "services", "pods", "endpoints" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "" ]
+    resources: [ "events" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "" ]
+    resources: [ "namespaces" ]
+    verbs: [ "get", "list" ]
+  - apiGroups: [ "" ]
+    resources: [ "endpoints", "configmaps" ]
+    verbs: [ "get", "list", "watch", "update", "patch", "create" ]
+  - apiGroups: [ "" ]
+    resources: [ "serviceaccounts" ]
+    verbs: [ "create", "get", "delete", "update" ]
+  - apiGroups: [ "rbac.authorization.k8s.io" ]
+    resources: [ "roles", "rolebindings" ]
+    verbs: [ "create", "get", "delete", "update" ]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -39,5 +54,5 @@ subjects:
     namespace: wayease-duolaimall
 roleRef:
   kind: Role
-  name: wayease-duolaimall-configmap-reader-role
+  name: wayease-duolaimall-role
   apiGroup: rbac.authorization.k8s.io

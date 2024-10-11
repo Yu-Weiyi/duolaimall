@@ -64,7 +64,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     public ProductDetailDto getItemBySkuId(Long skuId) {
         ProductDetailDto productDetailDto = new ProductDetailDto();
 
-        RBloomFilter<Object> rBloomFilter = redissonClient.getBloomFilter(RedisConstant.SKU_BLOOM_FILTER_PREFIX);
+        RBloomFilter<Long> rBloomFilter = redissonClient.getBloomFilter(RedisConstant.SKU_BLOOM_FILTER);
         if (!rBloomFilter.contains(skuId)) {
             // filtered
             return productDetailDto;

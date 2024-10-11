@@ -19,6 +19,10 @@ spring:
           - name: ${spring.application.name}-${spring.profiles.active}-configmap
             namespace: ${spring.cloud.kubernetes.namespace}
             use-name-as-prefix: false
+      leader:
+        enabled: true
+        namespace: wayease-duolaimall
+        config-map-name: wayease-product-service-leader-election-configmap
 management:
   endpoints:
     web:
