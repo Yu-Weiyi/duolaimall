@@ -35,8 +35,6 @@ public interface ProductServiceClient {
     @GetMapping("/api/getTrademark/{tmId}")
     Result<TrademarkDto> getTrademarkMarkDto(@PathVariable("tmId") Long tmId);
 
-
-
-
-
+    @GetMapping("/api/getAllOnSaleSkuIdList")
+    Result<List<Long>> getAllOnSaleSkuIdList();
 }

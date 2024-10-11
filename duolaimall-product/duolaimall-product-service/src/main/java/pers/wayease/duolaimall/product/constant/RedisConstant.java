@@ -12,5 +12,5 @@ package pers.wayease.duolaimall.product.constant;
 public class RedisConstant {
 
     public static final String SKU_BLOOM_FILTER = "sku:bloom:filter";
-    public static final String SKU_BLOOM_FILTER_INITIALIZER_LOCK = "sku:bloom:filter:initializer:lock";
+    public static final String SKU_BLOOM_FILTER_INITIALIZATION_LOCK = "sku:bloom:filter:initialization:lock";
 }

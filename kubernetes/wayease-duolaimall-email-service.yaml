@@ -23,7 +23,7 @@ metadata:
   labels:
     app: wayease-duolaimall-email-service
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: wayease-duolaimall-email-service
@@ -36,7 +36,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-email-service
-          image: yuweiyi/duolaimall-email-service:0.3.1-SNAPSHOT
+          image: yuweiyi/duolaimall-email-service:0.3.11-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

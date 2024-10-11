@@ -37,4 +37,6 @@ public interface SkuService {
     List<SpuSaleAttributeInfoDto> getSpuSaleAttributeInfoList(Long spuId, Long skuId);
 
     List<PlatformAttributeInfoDto> getPlatformAttrInfoBySkuId(Long skuId);
+
+    List<Long> getAllOnSaleSkuIdList();
 }

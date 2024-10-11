@@ -12,4 +12,5 @@ package pers.wayease.duolaimall.search.constant;
 public class RedisConstant {
 
     public static final String HOT_SCORE = "hot:score";
+    public static final String GOODS_ES_INITIALIZATION_LOCK = "goods:es:initialization:lock";
 }

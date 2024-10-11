@@ -1,13 +1,11 @@
 package pers.wayease.duolaimall.search.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pers.wayease.duolaimall.product.pojo.dto.CategoryHierarchyDto;
-import pers.wayease.duolaimall.product.pojo.dto.PlatformAttributeInfoDto;
-import pers.wayease.duolaimall.product.pojo.dto.SkuInfoDto;
-import pers.wayease.duolaimall.product.pojo.dto.TrademarkDto;
+import pers.wayease.duolaimall.product.pojo.dto.*;
 import pers.wayease.duolaimall.search.client.ProductServiceClient;
 import pers.wayease.duolaimall.search.constant.RedisConstant;
 import pers.wayease.duolaimall.search.pojo.model.Goods;
@@ -31,6 +29,7 @@ import java.util.concurrent.Executors;
  * @since 2024-10-10 11:13
  */
 @Service
+@Slf4j
 public class UpdateServiceImpl implements UpdateService {
 
     @Autowired

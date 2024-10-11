@@ -5,6 +5,8 @@ spring:
     active: common, dev
   server:
     port: 8080
+  main:
+    allow-circular-references: true
   cloud:
     kubernetes:
       namespace: wayease-duolaimall
@@ -21,8 +23,8 @@ spring:
             use-name-as-prefix: false
       leader:
         enabled: true
-        namespace: wayease-duolaimall
-        config-map-name: wayease-product-service-leader-election-configmap
+        namespace: ${spring.cloud.kubernetes.namespace}
+        config-map-name: ${spring.application.name}-leader-election-configmap
 management:
   endpoints:
     web:

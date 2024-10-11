@@ -59,4 +59,10 @@ public class ProductController {
         TrademarkDto trademarkDto = trademarkService.getTrademarkByTmId(tmId);
         return Result.ok(trademarkDto);
     }
+
+    @GetMapping("/getAllOnSaleSkuIdList")
+    Result<List<Long>> getAllOnSaleSkuIdList() {
+        List<Long> skuIdList = skuService.getAllOnSaleSkuIdList();
+        return Result.ok(skuIdList);
+    }
 }

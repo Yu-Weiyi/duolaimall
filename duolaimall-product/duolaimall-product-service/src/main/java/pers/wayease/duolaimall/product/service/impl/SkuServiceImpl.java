@@ -157,4 +157,16 @@ public class SkuServiceImpl implements SkuService {
                 .toList();
         return platformAttributeInfoConverter.platformAttributeInfoPoList2DtoList(platformAttributeInfoList);
     }
+
+    @Override
+    public List<Long> getAllOnSaleSkuIdList() {
+        LambdaQueryWrapper<SkuInfo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper
+                .eq(SkuInfo::getIsSale, 1);
+        List<SkuInfo> allOnSaleSkuInfoList = skuInfoMapper.selectList(lambdaQueryWrapper);
+        List<Long> allOnSaleSkuIdList = allOnSaleSkuInfoList.stream()
+                .map(SkuInfo::getId)
+                .toList();
+        return allOnSaleSkuIdList;
+    }
 }

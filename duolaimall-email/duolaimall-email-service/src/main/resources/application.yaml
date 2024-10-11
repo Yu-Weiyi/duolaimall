@@ -5,6 +5,8 @@ spring:
     active: common, dev
   server:
     port: 8080
+  main:
+    allow-circular-references: true
   cloud:
     kubernetes:
       namespace: wayease-duolaimall
