@@ -36,7 +36,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-product-service
-          image: yuweiyi/duolaimall-product-service:0.2.19-SNAPSHOT
+          image: yuweiyi/duolaimall-product-service:0.3.1-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -49,11 +49,11 @@ spec:
               mountPath: /app/config/application-dev.yaml
               subPath: application-dev.yaml
           env:
-            - name: DB_PASSWORD
+            - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: wayease-duolaimall-product-service-dev-secret
-                  key: db-password
+                  key: mysql-password
             - name: MINIO_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -91,7 +91,7 @@ data:
           cacheResultSetMetadata=true&useSSL=false&useLocalSessionState=true&cachePrepStmts=true&useServerPrepStmts=true&
           characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
         username: root
-        password: ${DB_PASSWORD}
+        password: ${MYSQL_PASSWORD}
         hikari:
           connection-test-query: SELECT 1
           connection-timeout: 60000
@@ -119,5 +119,5 @@ metadata:
   namespace: wayease-duolaimall
 type: Opaque
 data:
-  db-password: MndzeCNFREM=
+  mysql-password: MndzeCNFREM=
   minio-password: MndzeCNFREM=

@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import pers.wayease.duolaimall.product.client.SearchServiceClient;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
-import pers.wayease.duolaimall.product.mapper.*;
+import pers.wayease.duolaimall.product.mapper.SkuInfoMapper;
+import pers.wayease.duolaimall.product.mapper.SpuSaleAttributeValueMapper;
 import pers.wayease.duolaimall.product.pojo.dto.*;
 import pers.wayease.duolaimall.product.pojo.model.SkuInfo;
 import pers.wayease.duolaimall.product.service.CategoryService;
@@ -48,11 +50,14 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private SkuInfoConverter skuInfoConverter;
 
     @Autowired
-    private static ExecutorService executorService = Executors.newFixedThreadPool(32);
+    private SearchServiceClient searchServiceClient;
+
+    private ExecutorService executorService = Executors.newFixedThreadPool(32);
 
     @Override
     public ProductDetailDto getItemBySkuId(Long skuId) {
-        long startTime = System.currentTimeMillis();
+        searchServiceClient.incrHotScore(skuId);
+
         ProductDetailDto productDetailDto = new ProductDetailDto();
 
         CompletableFuture<SkuInfoDto> skuInfoDtoCompletableFuture = CompletableFuture.supplyAsync(() -> {

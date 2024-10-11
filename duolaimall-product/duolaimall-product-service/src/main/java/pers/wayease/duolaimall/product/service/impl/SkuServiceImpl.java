@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pers.wayease.duolaimall.product.client.SearchServiceClient;
 import pers.wayease.duolaimall.product.converter.PlatformAttributeInfoConverter;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
 import pers.wayease.duolaimall.product.converter.SpuInfoConverter;
 import pers.wayease.duolaimall.product.mapper.*;
 import pers.wayease.duolaimall.product.pojo.dto.PlatformAttributeInfoDto;
+import pers.wayease.duolaimall.product.pojo.dto.SkuInfoDto;
 import pers.wayease.duolaimall.product.pojo.dto.SpuSaleAttributeInfoDto;
 import pers.wayease.duolaimall.product.pojo.dto.page.SkuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.model.*;
@@ -54,6 +56,9 @@ public class SkuServiceImpl implements SkuService {
     @Autowired
     private PlatformAttributeInfoConverter platformAttributeInfoConverter;
 
+    @Autowired
+    private SearchServiceClient searchServiceClient;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveSkuInfo(SkuInfoParam skuInfoParam) {
@@ -76,7 +81,13 @@ public class SkuServiceImpl implements SkuService {
     }
 
     @Override
-    public SkuInfoPageDto getPage(Page<SkuInfo> pageParam) {
+    public SkuInfoDto getSkuInfo(Long skuId) {
+        SkuInfo skuInfo = skuInfoMapper.selectObjectById(skuId);
+        return skuInfoConverter.skuInfoPo2Dto(skuInfo);
+    }
+
+    @Override
+    public SkuInfoPageDto getSkuInfoPage(Page<SkuInfo> pageParam) {
         Page<SkuInfo> skuInfoPage = skuInfoMapper.selectPage(pageParam, new LambdaQueryWrapper<SkuInfo>());
         List<Long> skuInfoIdList = skuInfoPage.getRecords().stream().map(SkuInfo::getId).toList();
         if (skuInfoIdList == null || skuInfoIdList.isEmpty()) {
@@ -90,11 +101,13 @@ public class SkuServiceImpl implements SkuService {
     @Override
     public void onSale(Long skuId) {
         updateSale(skuId, true);
+        searchServiceClient.upperGoods(skuId);
     }
 
     @Override
     public void offSale(Long skuId) {
         updateSale(skuId, false);
+        searchServiceClient.lowerGoods(skuId);
     }
 
     private void updateSale(Long skuId, boolean isSale) {

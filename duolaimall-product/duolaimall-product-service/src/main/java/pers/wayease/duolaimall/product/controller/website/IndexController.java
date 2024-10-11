@@ -25,7 +25,7 @@ public class IndexController {
     private CategoryService categoryService;
 
     @GetMapping("/index")
-    public Result<List<FirstLevelCategoryNodeDto>> getBaseCategoryList() {
+    public Result<List<FirstLevelCategoryNodeDto>> getCategoryTreeList() {
         List<FirstLevelCategoryNodeDto> categoryTreeList = categoryService.getCategoryTreeList();
         return Result.ok(categoryTreeList);
     }

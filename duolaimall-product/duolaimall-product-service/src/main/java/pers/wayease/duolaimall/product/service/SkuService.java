@@ -2,6 +2,7 @@ package pers.wayease.duolaimall.product.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import pers.wayease.duolaimall.product.pojo.dto.PlatformAttributeInfoDto;
+import pers.wayease.duolaimall.product.pojo.dto.SkuInfoDto;
 import pers.wayease.duolaimall.product.pojo.dto.SpuSaleAttributeInfoDto;
 import pers.wayease.duolaimall.product.pojo.dto.page.SkuInfoPageDto;
 import pers.wayease.duolaimall.product.pojo.model.SkuInfo;
@@ -23,7 +24,9 @@ public interface SkuService {
 
     void saveSkuInfo(SkuInfoParam skuInfoParam);
 
-    SkuInfoPageDto getPage(Page<SkuInfo> pageParam);
+    SkuInfoDto getSkuInfo(Long skuId);
+
+    SkuInfoPageDto getSkuInfoPage(Page<SkuInfo> pageParam);
 
     void onSale(Long skuId);
 

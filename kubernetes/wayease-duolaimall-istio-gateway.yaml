@@ -74,3 +74,25 @@ spec:
             host: wayease-duolaimall-product-service.wayease-duolaimall.svc.cluster.local
             port:
               number: 8080
+    - match:
+        - uri:
+            prefix: "/list"
+      corsPolicy:
+        allowOrigin:
+          - "*"
+        allowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        allowHeaders:
+          - Authorization
+          - Content-Type
+        allowCredentials: true
+        maxAge: "86400s"
+      route:
+        - destination:
+            host: wayease-duolaimall-search-service.wayease-duolaimall.svc.cluster.local
+            port:
+              number: 8080

@@ -8,6 +8,8 @@ spring:
   cloud:
     kubernetes:
       namespace: wayease-duolaimall
+      discovery:
+        enabled: true
       config:
         enabled: true
         sources:

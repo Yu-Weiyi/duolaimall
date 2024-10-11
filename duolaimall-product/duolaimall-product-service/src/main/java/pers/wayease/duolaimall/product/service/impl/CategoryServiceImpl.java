@@ -100,7 +100,18 @@ public class CategoryServiceImpl implements CategoryService {
         ThirdLevelCategory thirdLevelCategory = thirdLevelCategoryMapper.selectById(thirdLevelCategoryId);
         SecondLevelCategory secondLevelCategory = secondLevelCategoryMapper.selectById(thirdLevelCategory.getSecondLevelCategoryId());
         FirstLevelCategory firstLevelCategory = firstLevelCategoryMapper.selectById(secondLevelCategory.getFirstLevelCategoryId());
-        return new CategoryHierarchyDto(firstLevelCategory, secondLevelCategory, thirdLevelCategory);
+        return buildCategoryHierarchyDto(firstLevelCategory, secondLevelCategory, thirdLevelCategory);
+    }
+
+    private static CategoryHierarchyDto buildCategoryHierarchyDto(FirstLevelCategory firstLevelCategory, SecondLevelCategory secondLevelCategory, ThirdLevelCategory thirdLevelCategory) {
+        CategoryHierarchyDto categoryHierarchyDto = new CategoryHierarchyDto();
+        categoryHierarchyDto.setFirstLevelCategoryId(firstLevelCategory.getId());
+        categoryHierarchyDto.setFirstLevelCategoryName(firstLevelCategory.getName());
+        categoryHierarchyDto.setSecondLevelCategoryId(secondLevelCategory.getId());
+        categoryHierarchyDto.setSecondLevelCategoryName(secondLevelCategory.getName());
+        categoryHierarchyDto.setThirdLevelCategoryId(thirdLevelCategory.getId());
+        categoryHierarchyDto.setThirdLevelCategoryName(thirdLevelCategory.getName());
+        return categoryHierarchyDto;
     }
 
     @Override

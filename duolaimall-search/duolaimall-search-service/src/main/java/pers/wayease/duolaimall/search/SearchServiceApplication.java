@@ -3,6 +3,7 @@ package pers.wayease.duolaimall.search;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = "pers.wayease.duolaimall")
+@EnableFeignClients
 @Slf4j
 public class SearchServiceApplication {
 

@@ -34,7 +34,7 @@ public class SkuController {
     @GetMapping("/list/{page}/{limit}")
     public Result<SkuInfoPageDto> getPage(@PathVariable Integer page, @PathVariable Integer limit) {
         Page<SkuInfo> pageParam = new Page<>(page, limit);
-        SkuInfoPageDto skuInfoPageDto = skuService.getPage(pageParam);
+        SkuInfoPageDto skuInfoPageDto = skuService.getSkuInfoPage(pageParam);
         return Result.ok(skuInfoPageDto);
     }
 
