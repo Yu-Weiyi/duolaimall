@@ -1,10 +1,13 @@
 package pers.wayease.duolaimall.product.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import org.redisson.api.RBloomFilter;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import pers.wayease.duolaimall.product.client.SearchServiceClient;
+import pers.wayease.duolaimall.product.constant.RedisConstant;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
 import pers.wayease.duolaimall.product.mapper.SkuInfoMapper;
 import pers.wayease.duolaimall.product.mapper.SpuSaleAttributeValueMapper;
@@ -52,13 +55,23 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Autowired
     private SearchServiceClient searchServiceClient;
 
+    @Autowired
+    private RedissonClient redissonClient;
+
     private ExecutorService executorService = Executors.newFixedThreadPool(32);
 
     @Override
     public ProductDetailDto getItemBySkuId(Long skuId) {
-        searchServiceClient.incrHotScore(skuId);
-
         ProductDetailDto productDetailDto = new ProductDetailDto();
+
+        RBloomFilter<Object> rBloomFilter = redissonClient.getBloomFilter(RedisConstant.SKU_BLOOM_FILTER_PREFIX);
+        if (!rBloomFilter.contains(skuId)) {
+            // filtered
+            return productDetailDto;
+        }
+        // passed
+
+        searchServiceClient.incrHotScore(skuId);
 
         CompletableFuture<SkuInfoDto> skuInfoDtoCompletableFuture = CompletableFuture.supplyAsync(() -> {
             SkuInfo skuInfo = skuInfoMapper.selectObjectById(skuId);

@@ -2,10 +2,13 @@ package pers.wayease.duolaimall.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.redisson.api.RBloomFilter;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.wayease.duolaimall.product.client.SearchServiceClient;
+import pers.wayease.duolaimall.product.constant.RedisConstant;
 import pers.wayease.duolaimall.product.converter.PlatformAttributeInfoConverter;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
 import pers.wayease.duolaimall.product.converter.SpuInfoConverter;
@@ -58,6 +61,8 @@ public class SkuServiceImpl implements SkuService {
 
     @Autowired
     private SearchServiceClient searchServiceClient;
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -101,12 +106,17 @@ public class SkuServiceImpl implements SkuService {
     @Override
     public void onSale(Long skuId) {
         updateSale(skuId, true);
+
         searchServiceClient.upperGoods(skuId);
+
+        RBloomFilter<Object> rBloomFilter = redissonClient.getBloomFilter(RedisConstant.SKU_BLOOM_FILTER_PREFIX);
+        rBloomFilter.add(skuId);
     }
 
     @Override
     public void offSale(Long skuId) {
         updateSale(skuId, false);
+
         searchServiceClient.lowerGoods(skuId);
     }
 
