@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pers.wayease.duolaimall.common.aop.annotation.DistributedLockedInitialization;
+import pers.wayease.duolaimall.common.constant.RedisConstant;
 import pers.wayease.duolaimall.common.initialization.InitializationStrategy;
 import pers.wayease.duolaimall.search.client.ProductServiceClient;
-import pers.wayease.duolaimall.search.constant.RedisConstant;
 import pers.wayease.duolaimall.search.service.UpdateService;
 
 import java.util.List;

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pers.wayease.duolaimall.common.aop.annotation.Cache;
+import pers.wayease.duolaimall.common.constant.RedisConstant;
 import pers.wayease.duolaimall.product.converter.SpuInfoConverter;
 import pers.wayease.duolaimall.product.mapper.*;
 import pers.wayease.duolaimall.product.pojo.dto.SkuSaleAttributeValuePermutationDto;
@@ -109,6 +111,7 @@ public class SpuServiceImpl implements SpuService {
     }
 
     @Override
+    @Cache(prefix = RedisConstant.SPU_SALE_ATTRIBUTE_MAP)
     public Map<String, Long> getSkuSaleAttributeMap(Long spuId) {
         List<SkuSaleAttributeValuePermutationDto> skuSaleAttributeValuePermutationDtoList = skuSaleAttributeValueMapper.selectPermutationObjectBySpuId(spuId);
         HashMap<String, Long> sluSaleAttributeValueMap = new HashMap<>();
@@ -119,6 +122,7 @@ public class SpuServiceImpl implements SpuService {
     }
 
     @Override
+    @Cache(prefix = RedisConstant.SPU_POSTER)
     public List<SpuPosterDto> getSpuPosterBySpuId(Long spuId) {
         LambdaQueryWrapper<SpuPoster> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper

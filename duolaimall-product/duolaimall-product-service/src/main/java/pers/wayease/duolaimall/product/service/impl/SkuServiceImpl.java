@@ -7,9 +7,10 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pers.wayease.duolaimall.common.aop.annotation.Cache;
+import pers.wayease.duolaimall.common.constant.RedisConstant;
 import pers.wayease.duolaimall.common.constant.TopicConstant;
 import pers.wayease.duolaimall.common.mq.BaseProducer;
-import pers.wayease.duolaimall.product.constant.RedisConstant;
 import pers.wayease.duolaimall.product.converter.PlatformAttributeInfoConverter;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
 import pers.wayease.duolaimall.product.converter.SpuInfoConverter;
@@ -141,12 +142,14 @@ public class SkuServiceImpl implements SkuService {
     }
 
     @Override
+    @Cache(prefix = RedisConstant.SKU_SALE_ATTRIBUTE_INFO_LIST)
     public List<SpuSaleAttributeInfoDto> getSpuSaleAttributeInfoList(Long spuId, Long skuId) {
         List<SpuSaleAttributeInfo> spuSaleAttributeInfoList = spuSaleAttributeInfoMapper.selectCheckedObject(spuId, skuId);
         return spuInfoConverter.spuSaleAttributeInfoPoList2DtoList(spuSaleAttributeInfoList);
     }
 
     @Override
+    @Cache(prefix = RedisConstant.PLATFORM_ATTRIBUTE_INFO_LIST)
     public List<PlatformAttributeInfoDto> getPlatformAttrInfoBySkuId(Long skuId) {
         LambdaQueryWrapper<SkuPlatformAttributeValue> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper

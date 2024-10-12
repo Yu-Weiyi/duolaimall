@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import pers.wayease.duolaimall.common.constant.TopicConstant;
 import pers.wayease.duolaimall.common.mq.BaseProducer;
-import pers.wayease.duolaimall.product.constant.RedisConstant;
+import pers.wayease.duolaimall.common.constant.RedisConstant;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
 import pers.wayease.duolaimall.product.mapper.SkuInfoMapper;
 import pers.wayease.duolaimall.product.pojo.dto.*;

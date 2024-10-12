@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pers.wayease.duolaimall.common.aop.annotation.DistributedLockedInitialization;
 import pers.wayease.duolaimall.common.initialization.InitializationStrategy;
-import pers.wayease.duolaimall.product.constant.RedisConstant;
+import pers.wayease.duolaimall.common.constant.RedisConstant;
 import pers.wayease.duolaimall.product.service.SkuService;
 
 import java.util.List;

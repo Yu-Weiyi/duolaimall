@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pers.wayease.duolaimall.common.aop.annotation.Cache;
+import pers.wayease.duolaimall.common.constant.RedisConstant;
 import pers.wayease.duolaimall.product.converter.CategoryConverter;
 import pers.wayease.duolaimall.product.converter.TrademarkConverter;
 import pers.wayease.duolaimall.product.mapper.CategoryTrademarkMapper;
@@ -44,12 +46,14 @@ public class CategoryServiceImpl implements CategoryService {
     private TrademarkConverter trademarkConverter;
 
     @Override
+    @Cache(prefix = RedisConstant.FIRST_LEVEL_CATRGORY)
     public List<FirstLevelCategoryDto> getFirstLevelCategory() {
         List<FirstLevelCategory> firstLevelCategoryList = firstLevelCategoryMapper.selectList(null);
         return categoryConverter.firstLevelCategoryPoList2DtoList(firstLevelCategoryList);
     }
 
     @Override
+    @Cache(prefix = RedisConstant.SECOND_LEVEL_CATRGORY)
     public List<SecondLevelCategoryDto> getSecondLevelCategory(Long firstLevelCategoryId) {
         LambdaQueryWrapper<SecondLevelCategory> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper
@@ -59,6 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cache(prefix = RedisConstant.THIRD_LEVEL_CATRGORY)
     public List<ThirdLevelCategoryDto> getThirdLevelCategory(Long thirdLevelCategoryId) {
         LambdaQueryWrapper<ThirdLevelCategory> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper
@@ -96,6 +101,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cache(prefix = RedisConstant.CATEGORY_HIERARCHY)
     public CategoryHierarchyDto getCategortHierarchyByThirdLevelCategoryId(Long thirdLevelCategoryId) {
         ThirdLevelCategory thirdLevelCategory = thirdLevelCategoryMapper.selectById(thirdLevelCategoryId);
         SecondLevelCategory secondLevelCategory = secondLevelCategoryMapper.selectById(thirdLevelCategory.getSecondLevelCategoryId());
@@ -115,6 +121,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cache(prefix = RedisConstant.CATEGORY_TREE_LIST)
     public List<FirstLevelCategoryNodeDto> getCategoryTreeList() {
         List<FirstLevelCategoryNodeDto> firstLevelCategoryNodeDtoList = firstLevelCategoryMapper.selectCategoryTreeList();
         return firstLevelCategoryNodeDtoList;
