@@ -22,6 +22,7 @@
         <module>duolaimall-email</module>
         <module>duolaimall-product</module>
         <module>duolaimall-search</module>
+        <module>duolaimall-user</module>
     </modules>
     <properties>
         <revision>0.3.17</revision>
