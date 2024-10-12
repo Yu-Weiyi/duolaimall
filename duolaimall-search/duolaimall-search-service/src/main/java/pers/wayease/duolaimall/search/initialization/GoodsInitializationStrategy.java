@@ -10,6 +10,8 @@ import pers.wayease.duolaimall.search.constant.RedisConstant;
 import pers.wayease.duolaimall.search.service.UpdateService;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
@@ -33,9 +35,15 @@ public class GoodsInitializationStrategy implements InitializationStrategy {
     @Override
     @DistributedLockedInitialization(distributedLockName = RedisConstant.GOODS_ES_INITIALIZATION_LOCK)
     public void initialize() {
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+
         List<Long> skuIdList = productServiceClient.getAllOnSaleSkuIdList().getData();
         skuIdList.forEach(skuId -> {
-            updateService.upperGoods(skuId);
+            executorService.submit(() -> {
+                updateService.upperGoods(skuId);
+            });
         });
+
+        executorService.shutdown();
     }
 }

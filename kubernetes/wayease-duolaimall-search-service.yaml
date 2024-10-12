@@ -23,7 +23,7 @@ metadata:
   labels:
     app: wayease-duolaimall-search-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: wayease-duolaimall-search-service
@@ -36,7 +36,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-search-service
-          image: yuweiyi/duolaimall-search-service:0.3.11-SNAPSHOT
+          image: yuweiyi/duolaimall-search-service:0.3.13-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

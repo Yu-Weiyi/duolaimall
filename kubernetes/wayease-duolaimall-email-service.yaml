@@ -23,7 +23,7 @@ metadata:
   labels:
     app: wayease-duolaimall-email-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: wayease-duolaimall-email-service
