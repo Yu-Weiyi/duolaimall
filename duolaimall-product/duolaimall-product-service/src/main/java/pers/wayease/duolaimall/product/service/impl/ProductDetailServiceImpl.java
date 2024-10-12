@@ -6,11 +6,11 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import pers.wayease.duolaimall.product.client.SearchServiceClient;
+import pers.wayease.duolaimall.common.constant.TopicConstant;
+import pers.wayease.duolaimall.common.mq.BaseProducer;
 import pers.wayease.duolaimall.product.constant.RedisConstant;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
 import pers.wayease.duolaimall.product.mapper.SkuInfoMapper;
-import pers.wayease.duolaimall.product.mapper.SpuSaleAttributeValueMapper;
 import pers.wayease.duolaimall.product.pojo.dto.*;
 import pers.wayease.duolaimall.product.pojo.model.SkuInfo;
 import pers.wayease.duolaimall.product.service.CategoryService;
@@ -46,17 +46,18 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     
     @Autowired
     private SkuInfoMapper skuInfoMapper;
-    @Autowired
-    private SpuSaleAttributeValueMapper spuSaleAttributeValueMapper;
     
     @Autowired
     private SkuInfoConverter skuInfoConverter;
 
-    @Autowired
-    private SearchServiceClient searchServiceClient;
+//    @Autowired
+//    private SearchServiceClient searchServiceClient;
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private BaseProducer baseProducer;
 
     private ExecutorService executorService = Executors.newFixedThreadPool(32);
 
@@ -71,7 +72,8 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         }
         // passed
 
-        searchServiceClient.incrHotScore(skuId);
+//        searchServiceClient.incrHotScore(skuId);
+        baseProducer.sendMessage(TopicConstant.SKU_INCREASE_HOT_SCORE, skuId);
 
         CompletableFuture<SkuInfoDto> skuInfoDtoCompletableFuture = CompletableFuture.supplyAsync(() -> {
             SkuInfo skuInfo = skuInfoMapper.selectObjectById(skuId);

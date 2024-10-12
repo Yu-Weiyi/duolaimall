@@ -36,7 +36,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-product-service
-          image: yuweiyi/duolaimall-product-service:0.3.12-SNAPSHOT
+          image: yuweiyi/duolaimall-product-service:0.3.15-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -117,6 +117,12 @@ data:
       secret-key: ${MINIO_PASSWORD}
       bucket-name: wayease-duolaimall
       file-prefix: wayease-duolaimall-file-
+    rocketmq:
+      name-server: wayease-rocketmq-nameserver.wayease-middleware.svc.cluster.local:9876
+      producer:
+        group: ${spring.application.name}-producer
+      consumer:
+        group: ${spring.application.name}-consumer
     logging:
       level:
         pers.wayease.duolaimall.product.mapper: debug

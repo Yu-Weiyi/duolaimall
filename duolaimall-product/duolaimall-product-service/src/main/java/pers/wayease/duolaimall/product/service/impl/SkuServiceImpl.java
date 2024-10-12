@@ -7,7 +7,8 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pers.wayease.duolaimall.product.client.SearchServiceClient;
+import pers.wayease.duolaimall.common.constant.TopicConstant;
+import pers.wayease.duolaimall.common.mq.BaseProducer;
 import pers.wayease.duolaimall.product.constant.RedisConstant;
 import pers.wayease.duolaimall.product.converter.PlatformAttributeInfoConverter;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
@@ -59,8 +60,12 @@ public class SkuServiceImpl implements SkuService {
     @Autowired
     private PlatformAttributeInfoConverter platformAttributeInfoConverter;
 
+//    @Autowired
+//    private SearchServiceClient searchServiceClient;
+
     @Autowired
-    private SearchServiceClient searchServiceClient;
+    private BaseProducer baseProducer;
+
     @Autowired
     private RedissonClient redissonClient;
 
@@ -107,7 +112,8 @@ public class SkuServiceImpl implements SkuService {
     public void onSale(Long skuId) {
         updateSale(skuId, true);
 
-        searchServiceClient.upperGoods(skuId);
+//        searchServiceClient.upperGoods(skuId);
+        baseProducer.sendMessage(TopicConstant.SKU_ON_SALE, skuId);
 
         RBloomFilter<Long> rBloomFilter = redissonClient.getBloomFilter(RedisConstant.SKU_BLOOM_FILTER);
         rBloomFilter.add(skuId);
@@ -117,7 +123,8 @@ public class SkuServiceImpl implements SkuService {
     public void offSale(Long skuId) {
         updateSale(skuId, false);
 
-        searchServiceClient.lowerGoods(skuId);
+//        searchServiceClient.lowerGoods(skuId);
+        baseProducer.sendMessage(TopicConstant.SKU_OFF_SALE, skuId);
     }
 
     private void updateSale(Long skuId, boolean isSale) {

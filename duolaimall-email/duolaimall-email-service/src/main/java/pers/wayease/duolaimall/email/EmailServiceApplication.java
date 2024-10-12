@@ -22,3 +22,5 @@ public class EmailServiceApplication {
         log.info("Email service started successfully.");
     }
 }
+
+// TODO send right now for one or 5 minutes later for all

@@ -17,6 +17,7 @@ import pers.wayease.duolaimall.search.service.UpdateService;
  * @description List Update controller class.
  * @since 2024-10-10 11:04
  */
+@Deprecated
 @RestController
 @RequestMapping("/api/list")
 public class ListUpdateController {
@@ -24,18 +25,21 @@ public class ListUpdateController {
     @Autowired
     private UpdateService updateService;
 
+    @Deprecated
     @PostMapping("/upperGoods/{skuId}")
     Result<Void> upperGoods(@PathVariable("skuId") Long skuId) {
         updateService.upperGoods(skuId);
         return Result.ok();
     }
 
+    @Deprecated
     @PostMapping("/lowerGoods/{skuId}")
     Result<Void> lowerGoods(@PathVariable("skuId") Long skuId) {
         updateService.lowerGoods(skuId);
         return Result.ok();
     }
 
+    @Deprecated
     @PostMapping("/incrHotScore/{skuId}")
     Result<Void> incrHotScore(@PathVariable("skuId") Long skuId) {
         updateService.increaseHotScore(skuId);
