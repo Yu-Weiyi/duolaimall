@@ -37,7 +37,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-user-service
-          image: yuweiyi/duolaimall-user-service:0.4.10-SNAPSHOT
+          image: yuweiyi/duolaimall-user-service:0.4.15-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -113,6 +113,7 @@ data:
         replicas: redis://wayease-redis-replicas.wayease-middleware.svc.cluster.local:6379
         password: ${REDIS_PASSWORD}
     rocketmq:
+      proxy: wayease-rocketmq-proxy.wayease-middleware.svc.cluster.local:8080
       name-server: wayease-rocketmq-nameserver.wayease-middleware.svc.cluster.local:9876
       producer:
         group: ${spring.application.name}-producer

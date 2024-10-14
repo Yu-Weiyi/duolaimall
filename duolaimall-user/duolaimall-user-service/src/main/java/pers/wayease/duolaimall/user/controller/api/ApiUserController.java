@@ -16,13 +16,13 @@ import java.util.List;
  * @version 1.0
  * @project duolaimall
  * @package pers.wayease.duolaimall.user.controller.api
- * @name UserController
- * @description User controller class.
+ * @name ApiUserController
+ * @description API user controller class.
  * @since 2024-10-14 09:39
  */
 @RestController
 @RequestMapping("/api/user")
-public class UserController {
+public class ApiUserController {
 
     @Autowired
     private UserService userService;

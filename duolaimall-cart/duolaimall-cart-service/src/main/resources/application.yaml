@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: ${spring.cloud.kubernetes.namespace}-cart-service
+  profiles:
+    active: common, dev
+  server:
+    port: 8080
+  main:
+    allow-circular-references: true
+  cloud:
+    kubernetes:
+      namespace: wayease-duolaimall
+      discovery:
+        enabled: true
+      config:
+        enabled: true
+        sources:
+          - name: ${spring.cloud.kubernetes.namespace}-common-${spring.profiles.active}-configmap
+            namespace: ${spring.cloud.kubernetes.namespace}
+            use-name-as-prefix: false
+          - name: ${spring.application.name}-${spring.profiles.active}-configmap
+            namespace: ${spring.cloud.kubernetes.namespace}
+            use-name-as-prefix: false
+      leader:
+        enabled: true
+        namespace: ${spring.cloud.kubernetes.namespace}
+        config-map-name: ${spring.application.name}-leader-election-configmap
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    kubernetes:
+      enabled: true
+  metrics:
+    enable:
+      hikari: true

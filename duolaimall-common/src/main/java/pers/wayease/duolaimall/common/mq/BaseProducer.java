@@ -1,19 +1,21 @@
 package pers.wayease.duolaimall.common.mq;
 
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.apache.rocketmq.client.producer.SendResult;
-import org.apache.rocketmq.client.producer.SendStatus;
-import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.client.apis.ClientConfiguration;
+import org.apache.rocketmq.client.apis.ClientException;
+import org.apache.rocketmq.client.apis.ClientServiceProvider;
+import org.apache.rocketmq.client.apis.message.Message;
+import org.apache.rocketmq.client.apis.message.MessageBuilder;
+import org.apache.rocketmq.client.apis.producer.Producer;
+import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import pers.wayease.duolaimall.common.constant.TopicConstant;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
@@ -24,82 +26,91 @@ import java.nio.charset.StandardCharsets;
  * @description Base producer class.
  * @since 2024-10-12 13:31
  */
-@Component
 @Slf4j
-public class BaseProducer {
+public abstract class BaseProducer {
 
-    @Value("${rocketmq.name-server}")
-    String nameServer;
     @Value("${rocketmq.producer.group}")
-    String producerGroup;
+    private String producerGroup;
 
-    private DefaultMQProducer defaultMQProducer;
+    // from construction
+    private TopicConstant topicConstant;
+
+    private ClientServiceProvider clientServiceProvider;
+
+    private ClientConfiguration clientConfiguration;
+
+    private Producer producer;
+
+    public BaseProducer(ClientServiceProvider clientServiceProvider, ClientConfiguration clientConfiguration, TopicConstant topicConstant) {
+        this.clientServiceProvider = clientServiceProvider;
+        this.clientConfiguration = clientConfiguration;
+        this.topicConstant = topicConstant;
+    }
 
     @PostConstruct
-    public void init() {
-        defaultMQProducer = new DefaultMQProducer(producerGroup);
-        defaultMQProducer.setNamesrvAddr(nameServer);
+    public void init() throws ClientException {
+        producer = clientServiceProvider.newProducerBuilder()
+                .setClientConfiguration(clientConfiguration)
+                .setTopics(topicConstant.name())
+                .build();
+        log.info("RocketMQ producer {} {} initialized.", producerGroup, topicConstant.name());
+    }
+
+    public void sendMessageNow(TopicConstant topicConstant, String[] keys, String tag, String body) {
+        sendMessage(topicConstant, keys, tag, body, null);
+    }
+
+    public void sendSimplifiedMessageNow(TopicConstant topicConstant, String body) {
+        sendMessage(topicConstant, null, null, body, null);
+    }
+
+    public void sendMessageAfter(TopicConstant topicConstant, String[] keys, String tag, String body, Duration duration) {
+        sendMessage(topicConstant, keys, tag, body, System.currentTimeMillis() + duration.toMillis());
+    }
+
+    public void sendSimplifiedMessageAfter(TopicConstant topicConstant, String body, Duration duration) {
+        sendMessage(topicConstant, null, null, body, System.currentTimeMillis() + duration.toMillis());
+    }
+
+    public void sendMessageAt(TopicConstant topicConstant, String[] keys, String tag, String body, Long deliveryTimestamp) {
+        sendMessage(topicConstant, keys, tag, body, deliveryTimestamp);
+    }
+
+    public void sendSimplifiedMessageAt(TopicConstant topicConstant, String body, Long deliveryTimestamp) {
+        sendMessage(topicConstant, null, null, body, deliveryTimestamp);
+    }
+
+    protected void sendMessage(TopicConstant topicConstant, String[] keys, String tag, String body, Long deliveryTimestamp) {
+        MessageBuilder messageBuilder = clientServiceProvider.newMessageBuilder()
+//                .setMessageGroup(producerGroup)// FIFO mode
+//              // NORMAL mode
+                .setTopic(topicConstant.name())
+                .setBody(body.getBytes(StandardCharsets.UTF_8));
+        if (keys != null && keys.length > 0) {
+            messageBuilder.setKeys(keys);
+        }
+        if (tag != null && !tag.isBlank()) {
+            messageBuilder.setTag(tag);
+        }
+        if (deliveryTimestamp != null) {
+            messageBuilder.setDeliveryTimestamp(deliveryTimestamp);
+        }
+
+        Message message = messageBuilder.build();
 
         try {
-            defaultMQProducer.start();
-            log.info("RocketMQ producer initialized, name server: {}, producer group: {}.", nameServer, producerGroup);
-        } catch (MQClientException e) {
-            log.error("Error when initialize RocketMQ producer, name server: {}, producer group: {}.", nameServer, producerGroup);
-            e.printStackTrace();
+            SendReceipt sendReceipt = producer.send(message);
+            log.info("RocketMQ producer {} sent message body {}.", topicConstant.name(), body);
+        } catch (ClientException e) {
+            log.warn("RocketMQ producer {} failed to send message {}.", topicConstant.name(), body, e);
         }
     }
 
     @PreDestroy
-    public void destroy() {
-        if (defaultMQProducer != null) {
-            defaultMQProducer.shutdown();
-            log.info("RocketMQ producer destroyed.");
+    public void destroy() throws IOException {
+        if (producer != null) {
+            producer.close();
+            log.info("RocketMQ producer {} {} closed.", producerGroup, topicConstant.name());
         }
-    }
-
-    public Boolean sendMessage(TopicConstant topicConstant, Object messageBody) {
-        return send(topicConstant.name(), messageBody, MessageType.NORMAL, 0);
-    }
-
-    public Boolean sendDelayMessage(TopicConstant topicConstant, Object messageBody, int delayLevel) {
-        return send(topicConstant.name(), messageBody, MessageType.DELAY, delayLevel);
-    }
-
-    private Boolean send(String topicName, Object messageBody, MessageType messageType, int delayLevel) {
-        String jsonMessage = JSON.toJSONString(messageBody);
-        Message message = new Message(topicName, jsonMessage.getBytes(StandardCharsets.UTF_8));
-        if (messageType == MessageType.DELAY) {
-            if (delayLevel <= 0) {
-                throw new RuntimeException("Delay level should be greater than 0, not " + delayLevel + ".");
-            }
-            message.setDelayTimeLevel(delayLevel);
-        }
-
-        try {
-            SendResult sendResult = defaultMQProducer.send(message);
-
-            if (sendResult == null || sendResult.getSendStatus() == null) {
-                return false;
-            }
-
-            if (sendResult != null) {
-                SendStatus sendStatus = sendResult.getSendStatus();
-                if (SendStatus.SEND_OK.equals(sendStatus)) {
-                    log.info("RocketMQ message sent, topic: {}, message: {}{}", topicName, jsonMessage, messageType == MessageType.DELAY ? ", delay level: " + delayLevel : "");
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        } catch (Exception e) {
-            log.warn("RocketMQ failed to send message, topic: {}, message: {}{}", topicName, messageBody, messageType == MessageType.DELAY ? ", delay level: " + delayLevel : "");
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    enum MessageType {
-        NORMAL,
-        DELAY
     }
 }

@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.wayease.duolaimall.common.aop.annotation.Cache;
 import pers.wayease.duolaimall.common.constant.RedisConstant;
-import pers.wayease.duolaimall.common.constant.TopicConstant;
-import pers.wayease.duolaimall.common.mq.BaseProducer;
 import pers.wayease.duolaimall.product.converter.PlatformAttributeInfoConverter;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
 import pers.wayease.duolaimall.product.converter.SpuInfoConverter;
 import pers.wayease.duolaimall.product.mapper.*;
+import pers.wayease.duolaimall.product.mq.producer.SkuOffSaleProducer;
+import pers.wayease.duolaimall.product.mq.producer.SkuOnSaleProducer;
 import pers.wayease.duolaimall.product.pojo.dto.PlatformAttributeInfoDto;
 import pers.wayease.duolaimall.product.pojo.dto.SkuInfoDto;
 import pers.wayease.duolaimall.product.pojo.dto.SpuSaleAttributeInfoDto;
@@ -65,7 +65,9 @@ public class SkuServiceImpl implements SkuService {
 //    private SearchServiceClient searchServiceClient;
 
     @Autowired
-    private BaseProducer baseProducer;
+    private SkuOffSaleProducer skuOffSaleProducer;
+    @Autowired
+    private SkuOnSaleProducer skuOnSaleProducer;
 
     @Autowired
     private RedissonClient redissonClient;
@@ -114,7 +116,7 @@ public class SkuServiceImpl implements SkuService {
         updateSale(skuId, true);
 
 //        searchServiceClient.upperGoods(skuId);
-        baseProducer.sendMessage(TopicConstant.SKU_ON_SALE, skuId);
+        skuOnSaleProducer.sendSimplifiedMessageNow(String.valueOf(skuId));
 
         RBloomFilter<Long> rBloomFilter = redissonClient.getBloomFilter(RedisConstant.SKU_BLOOM_FILTER);
         rBloomFilter.add(skuId);
@@ -125,7 +127,7 @@ public class SkuServiceImpl implements SkuService {
         updateSale(skuId, false);
 
 //        searchServiceClient.lowerGoods(skuId);
-        baseProducer.sendMessage(TopicConstant.SKU_OFF_SALE, skuId);
+        skuOffSaleProducer.sendSimplifiedMessageNow(String.valueOf(skuId));
     }
 
     private void updateSale(Long skuId, boolean isSale) {
