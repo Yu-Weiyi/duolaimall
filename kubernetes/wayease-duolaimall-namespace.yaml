@@ -5,7 +5,7 @@ metadata:
   name: wayease-duolaimall
   labels:
     author: wayease
-    project: duolaimall
+    project: wayease-duolaimall
     kubernetes.io/metadata.name: wayease-duolaimall
     istio-injection: enabled
 ---

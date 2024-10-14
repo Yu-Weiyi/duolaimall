@@ -96,3 +96,81 @@ spec:
             host: wayease-duolaimall-search-service.wayease-duolaimall.svc.cluster.local
             port:
               number: 8080
+    - match:
+        - uri:
+            prefix: "/user"
+      corsPolicy:
+        allowOrigin:
+          - "*"
+        allowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        allowHeaders:
+          - Token
+          - Cookie
+          - Content-Type
+        allowCredentials: true
+        maxAge: "86400s"
+      route:
+        - destination:
+            host: wayease-duolaimall-user-service.wayease-duolaimall.svc.cluster.local
+            port:
+              number: 8080
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: wayease-duolaimall-istio-authorizationpolicy
+  namespace: wayease-duolaimall
+spec:
+  selector:
+    matchLabels:
+      istio: wayease-istio-ingressgateway
+  action: CUSTOM
+  provider:
+    name: "wayease-duolaimall-user-service-ext-authz"
+  rules:
+    - to:
+        - operation:
+            paths: ["/user/logout"]
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: wayease-duolaimall-istio-envoyfilter
+  namespace: wayease-duolaimall
+spec:
+  workloadSelector:
+    labels:
+      project: wayease-duolaimall
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.ext_authz
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
+            http_service:
+              server_uri:
+                uri: "http://wayease-duolaimall-user-service.wayease-duolaimall.svc.cluster.local:8080/user/auth"
+                cluster: "outbound|8080||wayease-duolaimall-user-service.wayease-duolaimall.svc.cluster.local"
+                timeout: 3s
+              authorization_request:
+                allowed_headers:
+                  patterns:
+                    - exact: "Token"
+                    - exact: "Cookie"
+              authorization_response:
+                allowed_upstream_headers:
+                  patterns:
+                    - exact: "X-User-Id"

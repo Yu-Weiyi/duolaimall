@@ -32,11 +32,12 @@ spec:
       name: wayease-duolaimall-email-service-deployment
       labels:
         app: wayease-duolaimall-email-service
+        project: wayease-duolaimall
     spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-email-service
-          image: yuweiyi/duolaimall-email-service:0.3.15-SNAPSHOT
+          image: yuweiyi/duolaimall-email-service:0.4.10-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -49,16 +50,21 @@ spec:
               mountPath: /app/config/application-dev.yaml
               subPath: application-dev.yaml
           env:
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-common-dev-secret
+                  key: jwt-secret-key
             - name: MAIL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: wayease-duolaimall-email-service-dev-secret
                   key: mail-password
-            - name: DB_PASSWORD
+            - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: wayease-duolaimall-email-service-dev-secret
-                  key: db-password
+                  key: mysql-password
       volumes:
         - name: common-config-volume
           configMap:
@@ -116,4 +122,4 @@ metadata:
 type: Opaque
 data:
   mail-password: b21lZHBvaWlqZHl6Z2Vkag==
-  db-password: MndzeCNFREM=
+  mysql-password: MndzeCNFREM=

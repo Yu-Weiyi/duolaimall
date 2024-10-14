@@ -25,6 +25,7 @@ public class BaseMqMessageListener implements MessageListenerConcurrently {
 
     public BaseMqMessageListener(Consumer<MessageExt> consumerStrategy) {
         this.consumerStrategy = consumerStrategy;
+        log.info("MQ message listener start with consumer strategy: {}.", consumerStrategy);
     }
 
     @Override

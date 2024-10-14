@@ -32,11 +32,12 @@ spec:
       name: wayease-duolaimall-product-service-deployment
       labels:
         app: wayease-duolaimall-product-service
+        project: wayease-duolaimall
     spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-product-service
-          image: yuweiyi/duolaimall-product-service:0.3.17-SNAPSHOT
+          image: yuweiyi/duolaimall-product-service:0.4.10-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -49,6 +50,11 @@ spec:
               mountPath: /app/config/application-dev.yaml
               subPath: application-dev.yaml
           env:
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-common-dev-secret
+                  key: jwt-secret-key
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:

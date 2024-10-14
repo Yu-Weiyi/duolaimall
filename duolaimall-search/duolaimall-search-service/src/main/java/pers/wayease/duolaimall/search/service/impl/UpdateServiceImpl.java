@@ -101,11 +101,13 @@ public class UpdateServiceImpl implements UpdateService {
         ).join();
 
         goodsRepository.save(goods);
+        log.info("Saved ES goods {}", goods);
     }
 
     @Override
     public void lowerGoods(Long skuId) {
         goodsRepository.deleteById(skuId);
+        log.info("Deleted ES goods {}", skuId);
     }
 
     @Override
@@ -114,12 +116,14 @@ public class UpdateServiceImpl implements UpdateService {
         RScoredSortedSet<Long> rScoredSortedSet = redissonClient.getScoredSortedSet(RedisConstant.HOT_SCORE);
         rScoredSortedSet.addScore(skuId, HOT_SCORE_INCREASE_STEP);
         Double score = rScoredSortedSet.getScore(skuId);
+        log.info("Updated Redis goods {} hot score {}", skuId, score);
         // in Elasticsearch
         if (score.intValue() % HOT_SCORE_UPDATE_STEP == 0) {
             Optional<Goods> goodsOptional = goodsRepository.findById(skuId);
             Goods goods = goodsOptional.get();
             goods.setHotScore(score.longValue());
             goodsRepository.save(goods);
+            log.info("Updated ES goods {} hot score {}", skuId, score);
         }
     }
 }

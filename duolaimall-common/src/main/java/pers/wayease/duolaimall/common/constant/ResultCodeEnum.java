@@ -24,6 +24,10 @@ public enum ResultCodeEnum implements CodeEnum {
 //    SECKILL_NO_START(210, "秒杀还没开始"),
 
     // WaYease Error Code
+    LOGIN_WITH_INEXIST_ACCOUNT(10001, "无此账户"),
+    LOGIN_WITH_CONTROVERSIAL_ACCOUNT(10002, "该账户有争议，请咨询管理员"),
+    LOGIN_WITH_UNMATCHED_PASSWORD(10003, "密码错误"),
+
     THIRD_PARTY_ERROR(30000, "第三方服务异常"),
     SMTP_CONNECTION_ERROR(30001, "SMTP连接异常");
 

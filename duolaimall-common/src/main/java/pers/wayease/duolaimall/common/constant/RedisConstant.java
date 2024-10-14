@@ -32,4 +32,6 @@ public class RedisConstant {
     public static final String SKU_BLOOM_FILTER_INITIALIZATION_LOCK = "lock:sku:bloom:filter:initialization";
     public static final String GOODS_ES_INITIALIZATION_LOCK = "lock:goods:es:initialization";
 
+    // auth jwt
+    public static final String AUTH_ID_JWT = "auth:id:jwt";
 }

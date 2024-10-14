@@ -2,49 +2,43 @@ package pers.wayease.duolaimall.common.mq;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import pers.wayease.duolaimall.common.constant.TopicConstant;
+import pers.wayease.duolaimall.common.listener.BaseMqMessageListener;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import java.util.function.Consumer;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
  * @version 1.0
+ * @since 2024-10-14 03:36
  * @project duolaimall
  * @package pers.wayease.duolaimall.common.mq
  * @name BaseConsumer
  * @description Base consumer class.
- * @since 2024-10-12 15:02
  */
-@Component
-@Scope("prototype")
 @Slf4j
-public class BaseConsumer {
+public abstract class BaseConsumer {
 
     @Value("${rocketmq.name-server}")
     String nameServer;
     @Value("${rocketmq.consumer.group}")
     String consumerGroup;
 
-    private DefaultMQPushConsumer defaultMQPushConsumer;
-
-    @PostConstruct
-    public void init() {
-        defaultMQPushConsumer = new DefaultMQPushConsumer(consumerGroup);
+    public void init(TopicConstant topicConstant, Consumer<MessageExt> messageExtConsumer) throws MQClientException {
+        DefaultMQPushConsumer defaultMQPushConsumer = new DefaultMQPushConsumer(consumerGroup);
         defaultMQPushConsumer.setNamesrvAddr(nameServer);
+        defaultMQPushConsumer.subscribe(topicConstant.name(), "*");
+        defaultMQPushConsumer.registerMessageListener(new BaseMqMessageListener(messageExtConsumer));
+        defaultMQPushConsumer.start();
+        log.info("Consumer {} started.", topicConstant.name());
     }
 
-    @PreDestroy
-    public void destroy() {
-        if (defaultMQPushConsumer != null) {
-            defaultMQPushConsumer.shutdown();
-            log.info("RocketMQ consumer destroyed.");
-        }
-    }
-
-    public DefaultMQPushConsumer getInitializedMQPushConsumer() {
-        return defaultMQPushConsumer;
-    }
+//    @PreDestroy
+//    public void destroy() {
+//        defaultMQPushConsumer.shutdown();
+//        log.info("Consumer {} shutdown.", defaultMQPushConsumer.getSubscription());
+//    }
 }

@@ -19,3 +19,14 @@ data:
     jackson:
       date-format: yyyy-MM-dd HH:mm:ss
       time-zone: GMT+8
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wayease-duolaimall-common-dev-secret
+  namespace: wayease-duolaimall
+type: Opaque
+data:
+  jwt-secret-key: d2F5ZWFzZS1kdW9sYWltYWxsLWp3dC1zZWNyZXQta2V5LXdoaWNoLXNpemUtbXVzdC1ndC0yNTY=

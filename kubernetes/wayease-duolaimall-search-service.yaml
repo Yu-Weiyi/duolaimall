@@ -32,11 +32,12 @@ spec:
       name: wayease-duolaimall-search-service-deployment
       labels:
         app: wayease-duolaimall-search-service
+        project: wayease-duolaimall
     spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-search-service
-          image: yuweiyi/duolaimall-search-service:0.3.15-SNAPSHOT
+          image: yuweiyi/duolaimall-search-service:0.4.11-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -49,6 +50,11 @@ spec:
               mountPath: /app/config/application-dev.yaml
               subPath: application-dev.yaml
           env:
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-common-dev-secret
+                  key: jwt-secret-key
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:

@@ -9,7 +9,7 @@ import javax.mail.MessagingException;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
- * @version 0.1
+ * @version 1.0
  * @project duolaimall
  * @package pers.wayease.duolaimall.email.controller
  * @name EmailController
