@@ -11,8 +11,12 @@ import pers.wayease.duolaimall.common.constant.RedisConstant;
 import pers.wayease.duolaimall.common.constant.ResultCodeEnum;
 import pers.wayease.duolaimall.common.context.UserContext;
 import pers.wayease.duolaimall.common.exception.BaseException;
+import pers.wayease.duolaimall.user.converter.UserConverter;
+import pers.wayease.duolaimall.user.mapper.UserAddressMapper;
 import pers.wayease.duolaimall.user.mapper.UserInfoMapper;
+import pers.wayease.duolaimall.user.pojo.dto.UserAddressDto;
 import pers.wayease.duolaimall.user.pojo.dto.UserLoginDto;
+import pers.wayease.duolaimall.user.pojo.model.UserAddress;
 import pers.wayease.duolaimall.user.pojo.model.UserInfo;
 import pers.wayease.duolaimall.user.pojo.param.UserLoginParam;
 import pers.wayease.duolaimall.user.service.JwtAuthService;
@@ -39,6 +43,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private UserAddressMapper userAddressMapper;
+
+    @Autowired
+    private UserConverter userConverter;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -109,5 +118,14 @@ public class UserServiceImpl implements UserService {
         RBucket<String> rBucket = redissonClient.getBucket(RedisConstant.AUTH_ID_JWT + ":" + userId);
         rBucket.delete();
         log.info("Redis deleted auth of user {}.", userId);
+    }
+
+    @Override
+    public List<UserAddressDto> getUserAddressListByUserId(Long userId) {
+        LambdaQueryWrapper<UserAddress> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper
+                .eq(UserAddress::getUserId, userId);
+        List<UserAddress> userAddressList = userAddressMapper.selectList(lambdaQueryWrapper);
+        return userConverter.userAddressPoList2DtoList(userAddressList);
     }
 }

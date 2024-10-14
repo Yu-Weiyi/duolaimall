@@ -25,7 +25,7 @@
         <module>duolaimall-user</module>
     </modules>
     <properties>
-        <revision>0.4.11</revision>
+        <revision>0.4.12</revision>
         <changelist>SNAPSHOT</changelist>
 
         <java.version>17</java.version>

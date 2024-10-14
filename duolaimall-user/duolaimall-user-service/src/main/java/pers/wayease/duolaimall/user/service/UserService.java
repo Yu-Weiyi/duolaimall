@@ -1,7 +1,10 @@
 package pers.wayease.duolaimall.user.service;
 
+import pers.wayease.duolaimall.user.pojo.dto.UserAddressDto;
 import pers.wayease.duolaimall.user.pojo.dto.UserLoginDto;
 import pers.wayease.duolaimall.user.pojo.param.UserLoginParam;
+
+import java.util.List;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
@@ -17,4 +20,6 @@ public interface UserService {
     UserLoginDto login(UserLoginParam userLoginParam, String ip);
 
     void logout();
+
+    List<UserAddressDto> getUserAddressListByUserId(Long userId);
 }

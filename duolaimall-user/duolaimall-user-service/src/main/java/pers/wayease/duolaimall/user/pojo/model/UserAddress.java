@@ -2,6 +2,7 @@ package pers.wayease.duolaimall.user.pojo.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 import pers.wayease.duolaimall.common.pojo.model.BaseEntity;
 
 /**
@@ -14,6 +15,7 @@ import pers.wayease.duolaimall.common.pojo.model.BaseEntity;
  * @since 2024-10-12 21:56
  */
 @TableName("user_address")
+@Data
 public class UserAddress extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
