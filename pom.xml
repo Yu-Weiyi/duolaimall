@@ -24,9 +24,10 @@
         <module>duolaimall-search</module>
         <module>duolaimall-user</module>
         <module>duolaimall-cart</module>
+        <module>duolaimall-ware</module>
     </modules>
     <properties>
-        <revision>0.5.9</revision>
+        <revision>0.6.2</revision>
         <changelist>SNAPSHOT</changelist>
 
         <java.version>17</java.version>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.wayease.duolaimall.ware.mapper.WareSkuMapper">
+
+    <select id="selectStockBySkuId" resultType="java.lang.Integer">
+        SELECT SUM(stock - IFNULL(stock_locked, 0))
+        FROM ware_sku
+        WHERE sku_id = #{skuId}
+    </select>
+
+    <select id="selectStockBySkuIdForUpdate" resultType="java.lang.Integer">
+        SELECT stock - IFNULL(stock_locked, 0) AS available_stock
+        FROM ware_sku
+        WHERE sku_id = #{wareSku.skuId} AND warehouse_id = #{wareSku.warehouseId}
+        FOR UPDATE
+    </select>
+
+    <update id="increaseStockLocked">
+        UPDATE ware_sku
+        SET stock_locked = IFNULL(stock_locked, 0) + #{wareSku.stockLocked}
+        WHERE sku_id = #{wareSku.skuId} AND warehouse_id = #{wareSku.warehouseId}
+    </update>
+</mapper>
