@@ -17,21 +17,41 @@ import lombok.extern.slf4j.Slf4j;
 public class UserContext {
 
     private static ThreadLocal<Long> userId = ThreadLocal.withInitial(() -> 0L);
+    private static ThreadLocal<String> userTempId = ThreadLocal.withInitial(() -> "");
 
     public static void setUserId(Long id) {
         userId.set(id);
-        log.info("User context set user id={}", id);
+        log.info("User context set user id={}.", id);
+    }
+
+    public static void setUserTempId(String id) {
+        userTempId.set(id);
+        log.info("User context set user temp id={}.", id);
     }
 
     public static Long getUserId() {
         return userId.get();
     }
 
+    public static String getUserTempId() {
+        return userTempId.get();
+    }
+
     public static boolean isLogined() {
         return getUserId() != null && getUserId() != 0L;
     }
 
+    public static String getCartUserId() {
+        String cartUserId = isLogined() ? getUserId().toString() : getUserTempId();
+        log.info("User context get cart user id of {}.", cartUserId);
+        return cartUserId;
+    }
+
     public static void removeUserId() {
         userId.remove();
+    }
+
+    public static void removeUserTempId() {
+        userTempId.remove();
     }
 }

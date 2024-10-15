@@ -14,6 +14,7 @@ import pers.wayease.duolaimall.product.service.CategoryService;
 import pers.wayease.duolaimall.product.service.SkuService;
 import pers.wayease.duolaimall.product.service.TrademarkService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -64,5 +65,10 @@ public class ProductController {
     Result<List<Long>> getAllOnSaleSkuIdList() {
         List<Long> skuIdList = skuService.getAllOnSaleSkuIdList();
         return Result.ok(skuIdList);
+    }
+
+    @GetMapping("/getSkuPrice/{skuId}")
+    public BigDecimal getSkuPrice(@PathVariable("skuId") Long skuId) {
+        return skuService.getSkuPrice(skuId);
     }
 }

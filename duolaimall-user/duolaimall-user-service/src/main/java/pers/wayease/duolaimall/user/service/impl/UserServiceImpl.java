@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
     public void logout() {
         Long userId = UserContext.getUserId();
         if (userId == null || userId <= 0) {
-            log.warn("Got wrong user ID {} from header X-User-Id.", userId);
+            log.warn("Got wrong user ID {} from header userId.", userId);
             return;
         }
         RBucket<String> rBucket = redissonClient.getBucket(RedisConstant.AUTH_ID_JWT + ":" + userId);

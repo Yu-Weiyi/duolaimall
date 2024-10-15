@@ -34,4 +34,7 @@ public class RedisConstant {
 
     // auth jwt
     public static final String AUTH_ID_JWT = "auth:id:jwt";
+
+    // store
+    public static final String ORDER_TRADE_CODE = "order:trade:code";
 }

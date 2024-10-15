@@ -49,6 +49,7 @@ public class UserController {
         return Result.ok();
     }
 
+    // from istio-gateway
     @RequestMapping("/auth")
     public ResponseEntity<Result<Void>> authenticate(@RequestHeader(HeaderConstant.TOKEN_HEADER) String jwtToken) {
         log.info("Request need auth, token: {}.", jwtToken);

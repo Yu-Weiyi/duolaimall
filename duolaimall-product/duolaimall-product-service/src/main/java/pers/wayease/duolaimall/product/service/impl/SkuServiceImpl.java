@@ -181,4 +181,10 @@ public class SkuServiceImpl implements SkuService {
                 .toList();
         return allOnSaleSkuIdList;
     }
+
+    @Override
+    public BigDecimal getSkuPrice(Long skuId) {
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        return skuInfo.getPrice();
+    }
 }

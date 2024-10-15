@@ -30,7 +30,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
         interceptorRegistry.addInterceptor(requestHeaderInterceptor)
-                .addPathPatterns("/user/logout/**");
+                .addPathPatterns("/user/logout/**")
+                .addPathPatterns("/cart/**");
         interceptorRegistry.addInterceptor(globalThreadLocalContextRemoveInterceptor)
                 .addPathPatterns("/**");
         log.info("Interceptor registered.");

@@ -39,4 +39,6 @@ public interface SkuService {
     List<PlatformAttributeInfoDto> getPlatformAttrInfoBySkuId(Long skuId);
 
     List<Long> getAllOnSaleSkuIdList();
+
+    BigDecimal getSkuPrice(Long skuId);
 }
