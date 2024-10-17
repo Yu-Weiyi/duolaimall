@@ -18,6 +18,5 @@ import java.util.List;
  */
 public interface SkuSaleAttributeValueMapper extends BaseMapper<SkuSaleAttributeValue> {
 
-    // TODO rewrite SQL
     List<SkuSaleAttributeValuePermutationDto> selectPermutationObjectBySpuId(@Param("spuId") Long spuId);
 }

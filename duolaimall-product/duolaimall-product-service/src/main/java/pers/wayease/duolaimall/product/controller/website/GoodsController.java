@@ -25,6 +25,11 @@ public class GoodsController {
     @Autowired
     private ProductDetailService productDetailService;
 
+    @GetMapping("/undefined")
+    public Result getDefaultProductDetail() {
+        return Result.fail("该商品未上架");
+    }
+
     @GetMapping("/{skuId}")
     public Result<ProductDetailDto> getProductDetail(@PathVariable Long skuId) {
         ProductDetailDto productDetailDto = productDetailService.getItemBySkuId(skuId);

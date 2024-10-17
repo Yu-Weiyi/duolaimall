@@ -23,7 +23,6 @@ public class GlobalThreadLocalContextRemoveInterceptor implements HandlerInterce
 
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler, Exception exception) throws Exception {
-        // TODO interface remove()
         UserContext.removeUserId();
         UserContext.removeUserTempId();
         log.trace("User context removed.");

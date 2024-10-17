@@ -31,11 +31,8 @@ public class ProductServiceApplication {
     }
 }
 
-// TODO react speed AOP
 // TODO add custom banner with project info, svc info, pod info and so on
-// TODO transactional check
+// TODO react speed AOP
 // TODO admin operation audit AOP
 // TODO add prometheus metrics
-// TODO http://localhost/goods/undefined
-// TODO @NoAuth and @NeedAuth
 // TODO spring-retry

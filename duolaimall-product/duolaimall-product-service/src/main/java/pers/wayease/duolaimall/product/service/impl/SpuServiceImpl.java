@@ -70,7 +70,6 @@ public class SpuServiceImpl implements SpuService {
         return spuInfoConverter.spuInfoPoPage2PageDto(spuInfoPage);
     }
 
-    // TODO async
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveSpuInfo(SpuInfoParam spuInfoParam) {
