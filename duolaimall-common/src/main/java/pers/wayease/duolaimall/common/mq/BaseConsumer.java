@@ -28,12 +28,14 @@ public class BaseConsumer {
     @Value("${rocketmq.namesrv.addr}")
     private String namesrvAddr;
     @Value("${rocketmq.consumer.group}")
-    private String consumerGroup;
+    private String consumerGroupPrefix;
 
     private List<DefaultMQPushConsumer> defaultMQPushConsumerList;
 
     @Autowired
     private List<ConsumeStrategy> consumeStrategyList;
+
+    private String consumerGroup;
 
     @PostConstruct
     public void init() {
@@ -58,7 +60,8 @@ public class BaseConsumer {
             return null;
         }
         String topicName = consumeStrategy.getTopicConstant().name();
-        DefaultMQPushConsumer defaultMQPushConsumer = new DefaultMQPushConsumer(consumerGroup + ":" + topicName);
+        consumerGroup = consumerGroupPrefix + "-" + topicName;
+        DefaultMQPushConsumer defaultMQPushConsumer = new DefaultMQPushConsumer(consumerGroup);
         defaultMQPushConsumer.setNamesrvAddr(namesrvAddr);
         defaultMQPushConsumer.subscribe(topicName, "*");
         defaultMQPushConsumer.registerMessageListener(consumeStrategy);

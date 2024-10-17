@@ -37,7 +37,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-search-service
-          image: yuweiyi/duolaimall-search-service:0.7.11-SNAPSHOT
+          image: yuweiyi/duolaimall-search-service:0.7.13-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -58,7 +58,7 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: wayease-duolaimall-search-service-dev-secret
+                  name: wayease-duolaimall-common-dev-secret
                   key: redis-password
       volumes:
         - name: common-config-volume
@@ -86,16 +86,3 @@ data:
       elasticsearch:
         rest:
           uris: http://wayease-elasticsearch-master.wayease-middleware.svc.cluster.local:9200
-      redis:
-        master: redis://wayease-redis-master.wayease-middleware.svc.cluster.local:6379
-        replicas: redis://wayease-redis-replicas.wayease-middleware.svc.cluster.local:6379
-        password: ${REDIS_PASSWORD}
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: wayease-duolaimall-search-service-dev-secret
-  namespace: wayease-duolaimall
-type: Opaque
-data:
-  redis-password: MndzeCNFREM=

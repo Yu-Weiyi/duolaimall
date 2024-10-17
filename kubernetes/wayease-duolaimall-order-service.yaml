@@ -37,7 +37,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-order-service
-          image: yuweiyi/duolaimall-order-service:0.7.7-SNAPSHOT
+          image: yuweiyi/duolaimall-order-service:0.7.12-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -55,16 +55,16 @@ spec:
                 secretKeyRef:
                   name: wayease-duolaimall-common-dev-secret
                   key: jwt-secret-key
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-common-dev-secret
+                  key: redis-password
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: wayease-duolaimall-order-service-dev-secret
                   key: mysql-password
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: wayease-duolaimall-order-service-dev-secret
-                  key: redis-password
       volumes:
         - name: common-config-volume
           configMap:
@@ -107,14 +107,6 @@ data:
           minimum-idle: 10
           pool-name: HikariPool
           registerMbeans: true
-          logLevel: DEBUG
-      redis:
-        master: redis://wayease-redis-master.wayease-middleware.svc.cluster.local:6379
-        replicas: redis://wayease-redis-replicas.wayease-middleware.svc.cluster.local:6379
-        password: ${REDIS_PASSWORD}
-    logging:
-      level:
-        pers.wayease.duolaimall.order.mapper: debug
 ---
 apiVersion: v1
 kind: Secret
@@ -124,4 +116,3 @@ metadata:
 type: Opaque
 data:
   mysql-password: MndzeCNFREM=
-  redis-password: MndzeCNFREM=

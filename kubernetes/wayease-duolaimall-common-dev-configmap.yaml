@@ -10,6 +10,11 @@ data:
         project: wayease-duolaimall
         author: wayease
         email: yu_weiyi@outlook.com
+    spring:
+      redis:
+        master: redis://wayease-redis-master.wayease-middleware.svc.cluster.local:6379
+        replicas: redis://wayease-redis-replicas.wayease-middleware.svc.cluster.local:6379
+        password: ${REDIS_PASSWORD}
     logging:
       level:
         org.apache.rocketmq: debug
@@ -29,8 +34,6 @@ data:
         group: ${spring.application.name}-producer
       consumer:
         group: ${spring.application.name}-consumer
-    
-
 ---
 apiVersion: v1
 kind: Secret
@@ -40,3 +43,4 @@ metadata:
 type: Opaque
 data:
   jwt-secret-key: d2F5ZWFzZS1kdW9sYWltYWxsLWp3dC1zZWNyZXQta2V5LXdoaWNoLXNpemUtbXVzdC1ndC0yNTY=
+  redis-password: MndzeCNFREM=

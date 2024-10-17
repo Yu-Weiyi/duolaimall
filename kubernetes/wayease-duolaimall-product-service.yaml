@@ -37,7 +37,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-product-service
-          image: yuweiyi/duolaimall-product-service:0.7.11-SNAPSHOT
+          image: yuweiyi/duolaimall-product-service:0.7.13-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -55,16 +55,16 @@ spec:
                 secretKeyRef:
                   name: wayease-duolaimall-common-dev-secret
                   key: jwt-secret-key
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-common-dev-secret
+                  key: redis-password
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: wayease-duolaimall-product-service-dev-secret
                   key: mysql-password
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: wayease-duolaimall-product-service-dev-secret
-                  key: redis-password
             - name: MINIO_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -112,10 +112,6 @@ data:
           minimum-idle: 10
           pool-name: HikariPool
           registerMbeans: true
-      redis:
-        master: redis://wayease-redis-master.wayease-middleware.svc.cluster.local:6379
-        replicas: redis://wayease-redis-replicas.wayease-middleware.svc.cluster.local:6379
-        password: ${REDIS_PASSWORD}
     minio:
       endpoint-url: http://8.137.62.188:19000
       access-key: admin
@@ -131,5 +127,4 @@ metadata:
 type: Opaque
 data:
   mysql-password: MndzeCNFREM=
-  redis-password: MndzeCNFREM=
   minio-password: MndzeCNFREM=

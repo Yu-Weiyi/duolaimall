@@ -37,7 +37,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-cart-service
-          image: yuweiyi/duolaimall-cart-service:0.7.5-SNAPSHOT
+          image: yuweiyi/duolaimall-cart-service:0.7.12-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -58,7 +58,7 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: wayease-duolaimall-cart-service-dev-secret
+                  name: wayease-duolaimall-common-dev-secret
                   key: redis-password
       volumes:
         - name: common-config-volume
@@ -82,20 +82,12 @@ metadata:
   namespace: wayease-duolaimall
 data:
   application-dev.yaml: |
-    spring:
-      redis:
-        master: redis://wayease-redis-master.wayease-middleware.svc.cluster.local:6379
-        replicas: redis://wayease-redis-replicas.wayease-middleware.svc.cluster.local:6379
-        password: ${REDIS_PASSWORD}
-    logging:
-      level:
-        pers.wayease.duolaimall.cart.mapper: debug
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: wayease-duolaimall-cart-service-dev-secret
-  namespace: wayease-duolaimall
-type: Opaque
-data:
-  redis-password: MndzeCNFREM=
+#---
+#apiVersion: v1
+#kind: Secret
+#metadata:
+#  name: wayease-duolaimall-cart-service-dev-secret
+#  namespace: wayease-duolaimall
+#type: Opaque
+#data:
+#  redis-password: MndzeCNFREM=
