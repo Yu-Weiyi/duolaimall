@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
  * @version 1.0
  * @project duolaimall
- * @package pers.wayease.duolaimall.search.configuration
+ * @package pers.wayease.duolaimall.order.configuration
  * @name RedissonConfiguration
  * @description Redisson configuration class.
  * @since 2024-10-10 14:41

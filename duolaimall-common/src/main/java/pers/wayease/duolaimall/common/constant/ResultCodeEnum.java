@@ -28,6 +28,9 @@ public enum ResultCodeEnum implements CodeEnum {
     LOGIN_WITH_CONTROVERSIAL_ACCOUNT(10002, "该账户有争议，请咨询管理员"),
     LOGIN_WITH_UNMATCHED_PASSWORD(10003, "密码错误"),
 
+    STOCK_NOT_ENOUGH(10004, "库存不足"),
+    PRICE_HAS_CHANGED(10005, "价格已经变化"),
+
     THIRD_PARTY_ERROR(30000, "第三方服务异常"),
     SMTP_CONNECTION_ERROR(30001, "SMTP连接异常");
 

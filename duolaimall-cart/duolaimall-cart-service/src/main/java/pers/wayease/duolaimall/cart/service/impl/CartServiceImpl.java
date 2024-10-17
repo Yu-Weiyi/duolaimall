@@ -41,8 +41,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void addToCart(Long skuId, Integer skuNum) {
-        String cartUserId = UserContext.getCartUserId();
-        RMap<Long, CartInfoDto> rMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + cartUserId);
+        RMap<Long, CartInfoDto> rMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + UserContext.getCartUserId());
         CartInfoDto cartInfoDto = rMap.get(skuId);
         if (cartInfoDto != null) {
             cartInfoDto.setSkuNum(cartInfoDto.getSkuNum() + skuNum);
@@ -50,17 +49,15 @@ public class CartServiceImpl implements CartService {
             rMap.put(skuId, cartInfoDto);
         } else {
             SkuInfoDto skuInfoDto = productServiceClient.getSkuInfo(skuId).getData();
-            CartInfoDto createCartInfoDto = skuInfoConverter.skuInfoDto2CartInfoDto(skuInfoDto, skuNum, skuId, cartUserId);
+            CartInfoDto createCartInfoDto = skuInfoConverter.skuInfoDto2CartInfoDto(skuInfoDto, skuNum, skuId, UserContext.getCartUserId());
             rMap.put(skuId, createCartInfoDto);
         }
     }
 
     @Override
     public List<CartInfoDto> getCartList() {
-        String userId = String.valueOf(UserContext.getUserId());
-        String userTempId = UserContext.getUserTempId();
-        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + userId);
-        RMap<Long, CartInfoDto> userTempCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + userTempId);
+        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + UserContext.getStringUserId());
+        RMap<Long, CartInfoDto> userTempCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + UserContext.getUserTempId());
         List<CartInfoDto> userTempCartInfoDtoList = userTempCartInfoDtoRMap.readAllValues()
                 .stream()
                 .toList();
@@ -108,8 +105,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void checkCart( Integer isChecked, Long skuId) {
-        String cartUserId = UserContext.getCartUserId();
-        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + cartUserId);
+        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + UserContext.getCartUserId());
         CartInfoDto cartInfoDto = userCartInfoDtoRMap.get(skuId);
         if (cartInfoDto != null) {
             cartInfoDto.setIsChecked(isChecked);
@@ -121,15 +117,13 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void deleteCart(Long skuId) {
-        String cartUserId = UserContext.getCartUserId();
-        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + cartUserId);
+        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + UserContext.getCartUserId());
         userCartInfoDtoRMap.remove(skuId);
     }
 
     @Override
     public void deleteChecked() {
-        String cartUserId = UserContext.getCartUserId();
-        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + cartUserId);
+        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + UserContext.getCartUserId());
         List<Long> checkedIdList = new ArrayList<>();
         userCartInfoDtoRMap.forEach((skuId, userCartInfoDto) -> {
             if (userCartInfoDto.getIsChecked() == 1) {
@@ -140,9 +134,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartInfoDto> getCartCheckedList() {
-        String cartUserId = UserContext.getCartUserId();
-        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + cartUserId);
+    public List<CartInfoDto> getCheckedCartList() {
+        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + UserContext.getCartUserId());
         List<CartInfoDto> result = new ArrayList<>();
         userCartInfoDtoRMap.forEach((skuId, userCartInfoDto) -> {
             if (userCartInfoDto.getIsChecked() == 1) {
@@ -154,16 +147,14 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void delete(List<Long> skuIdList) {
-        String cartUserId = UserContext.getCartUserId();
-        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + cartUserId);
+        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + UserContext.getCartUserId());
         skuIdList.forEach(userCartInfoDtoRMap::remove);
     }
 
     @Override
     public void refreshCartPrice(Long skuId) {
-        String cartUserId = UserContext.getCartUserId();
         SkuInfoDto skuInfoDto = productServiceClient.getSkuInfo(skuId).getData();
-        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + cartUserId);
+        RMap<Long, CartInfoDto> userCartInfoDtoRMap = redissonClient.getMap(RedisConstant.ORDER_TRADE_CODE + ":" + UserContext.getCartUserId());
         CartInfoDto cartInfoDto = userCartInfoDtoRMap.get(skuId);
         cartInfoDto.setCartPrice(skuInfoDto.getPrice());
         userCartInfoDtoRMap.put(skuId, cartInfoDto);

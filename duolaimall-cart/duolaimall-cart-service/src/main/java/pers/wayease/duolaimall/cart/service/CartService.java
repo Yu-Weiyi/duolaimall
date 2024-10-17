@@ -25,7 +25,7 @@ public interface CartService {
 
     void deleteChecked();
 
-    List<CartInfoDto> getCartCheckedList();
+    List<CartInfoDto> getCheckedCartList();
 
     void delete(List<Long> skuIdList);
 

@@ -20,9 +20,9 @@ import java.math.BigDecimal;
 @FeignClient(name = "wayease-duolaimall-product-service", url = "http://wayease-duolaimall-product-service.wayease-duolaimall.svc.cluster.local:8080")
 public interface ProductServiceClient {
 
-    @GetMapping("/api/getSkuInfo/{skuId}")
+    @GetMapping("/api/product/getSkuInfo/{skuId}")
     Result<SkuInfoDto> getSkuInfo(@PathVariable("skuId") Long skuId);
 
-    @GetMapping("/getSkuPrice/{skuId}")
+    @GetMapping("/api/product/getSkuPrice/{skuId}")
     public BigDecimal getSkuPrice(@PathVariable("skuId") Long skuId);
 }

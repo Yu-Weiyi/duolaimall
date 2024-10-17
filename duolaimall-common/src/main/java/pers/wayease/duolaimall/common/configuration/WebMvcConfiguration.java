@@ -31,9 +31,12 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
         interceptorRegistry.addInterceptor(requestHeaderInterceptor)
                 .addPathPatterns("/user/logout/**")
-                .addPathPatterns("/cart/**");
+                .addPathPatterns("/cart/**")
+                .addPathPatterns("/order/auth/**");
         interceptorRegistry.addInterceptor(globalThreadLocalContextRemoveInterceptor)
                 .addPathPatterns("/**");
+        // TODO replace with @Auth
+        // TODO log trace ID ThreadLocal
         log.info("Interceptor registered.");
     }
 

@@ -13,5 +13,7 @@ public enum TopicConstant {
 
     SKU_ON_SALE,
     SKU_OFF_SALE,
-    SKU_INCREASE_HOT_SCORE;
+    SKU_INCREASE_HOT_SCORE,
+
+    DELAY_ORDER;
 }

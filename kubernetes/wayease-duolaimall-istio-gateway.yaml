@@ -155,6 +155,31 @@ spec:
             host: wayease-duolaimall-cart-service.wayease-duolaimall.svc.cluster.local
             port:
               number: 8080
+    - match:
+        - uri:
+            prefix: "/order/auth"
+      corsPolicy:
+        allowOrigin:
+          - "*"
+        allowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        allowHeaders:
+          - token
+          - Cookie
+          - Content-Type
+          - userId
+          - userTempId
+        allowCredentials: true
+        maxAge: "86400s"
+      route:
+        - destination:
+            host: wayease-duolaimall-order-service.wayease-duolaimall.svc.cluster.local
+            port:
+              number: 8080
 #---
 #apiVersion: security.istio.io/v1
 #kind: AuthorizationPolicy

@@ -2,6 +2,7 @@ package pers.wayease.duolaimall.common.context;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
@@ -18,6 +19,7 @@ public class UserContext {
 
     private static ThreadLocal<Long> userId = ThreadLocal.withInitial(() -> 0L);
     private static ThreadLocal<String> userTempId = ThreadLocal.withInitial(() -> "");
+    private static ThreadLocal<String> cartUserId = ThreadLocal.withInitial(() -> "");
 
     public static void setUserId(Long id) {
         userId.set(id);
@@ -41,10 +43,22 @@ public class UserContext {
         return getUserId() != null && getUserId() != 0L;
     }
 
+    public static String getStringUserId() {
+        return String.valueOf(userId.get());
+    }
+
+    public static void setCartUserId(String userId) {
+        cartUserId.set(userId);
+    }
+
     public static String getCartUserId() {
-        String cartUserId = isLogined() ? getUserId().toString() : getUserTempId();
-        log.info("User context get cart user id of {}.", cartUserId);
-        return cartUserId;
+        if (StringUtils.isBlank(cartUserId.get())) {
+            // not set
+            String cartUserId = isLogined() ? getStringUserId() : getUserTempId();
+            log.info("User context get cart user id of {}.", cartUserId);
+            return cartUserId;
+        }
+        return cartUserId.get();
     }
 
     public static void removeUserId() {

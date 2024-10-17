@@ -37,7 +37,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-product-service
-          image: yuweiyi/duolaimall-product-service:0.5.4-SNAPSHOT
+          image: yuweiyi/duolaimall-product-service:0.7.10-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -112,7 +112,6 @@ data:
           minimum-idle: 10
           pool-name: HikariPool
           registerMbeans: true
-          logLevel: DEBUG
       redis:
         master: redis://wayease-redis-master.wayease-middleware.svc.cluster.local:6379
         replicas: redis://wayease-redis-replicas.wayease-middleware.svc.cluster.local:6379
@@ -123,16 +122,6 @@ data:
       secret-key: ${MINIO_PASSWORD}
       bucket-name: wayease-duolaimall
       file-prefix: wayease-duolaimall-file-
-    rocketmq:
-      proxy: wayease-rocketmq-proxy.wayease-middleware.svc.cluster.local:8080
-      name-server: wayease-rocketmq-nameserver.wayease-middleware.svc.cluster.local:9876
-      producer:
-        group: ${spring.application.name}-producer
-      consumer:
-        group: ${spring.application.name}-consumer
-    logging:
-      level:
-        pers.wayease.duolaimall.product.mapper: debug
 ---
 apiVersion: v1
 kind: Secret

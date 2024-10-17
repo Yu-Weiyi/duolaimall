@@ -23,18 +23,18 @@ import java.util.List;
 @FeignClient(name = "wayease-duolaimall-product-service", url = "http://wayease-duolaimall-product-service.wayease-duolaimall.svc.cluster.local:8080")
 public interface ProductServiceClient {
 
-    @GetMapping("/api/getSkuInfo/{skuId}")
+    @GetMapping("/api/product/getSkuInfo/{skuId}")
     Result<SkuInfoDto> getSkuInfo(@PathVariable("skuId") Long skuId);
 
-    @GetMapping("/api/getCategoryHierarchy/{thirdLevelCategoryId}")
+    @GetMapping("/api/product/getCategoryHierarchy/{thirdLevelCategoryId}")
     Result<CategoryHierarchyDto> getCategoryHierarchy(@PathVariable("thirdLevelCategoryId") Long thirdLevelCategoryId);
 
-    @GetMapping("/api/getPlatformAttributeInfoList/{skuId}")
+    @GetMapping("/api/product/getPlatformAttributeInfoList/{skuId}")
     Result<List<PlatformAttributeInfoDto>> getPlatformAttributeInfoList(@PathVariable("skuId") Long skuId);
 
-    @GetMapping("/api/getTrademark/{tmId}")
+    @GetMapping("/api/product/getTrademark/{tmId}")
     Result<TrademarkDto> getTrademarkMarkDto(@PathVariable("tmId") Long tmId);
 
-    @GetMapping("/api/getAllOnSaleSkuIdList")
+    @GetMapping("/api/product/getAllOnSaleSkuIdList")
     Result<List<Long>> getAllOnSaleSkuIdList();
 }

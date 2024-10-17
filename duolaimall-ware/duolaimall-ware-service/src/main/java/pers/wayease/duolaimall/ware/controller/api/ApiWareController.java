@@ -1,10 +1,7 @@
 package pers.wayease.duolaimall.ware.controller.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pers.wayease.duolaimall.common.result.Result;
 import pers.wayease.duolaimall.ware.service.WareService;
 
@@ -28,5 +25,11 @@ public class ApiWareController {
     public Result<Boolean> hasStock(@PathVariable("skuId") Long skuId, @PathVariable("num") Integer num) {
         Boolean hasStock = wareService.hasStock(skuId, num);
         return Result.ok(hasStock);
+    }
+
+    @PostMapping("/decreaseStock/{orderId}")
+    public Result<Void> decreaseStock(@PathVariable("orderId") Long orderId) {
+        wareService.decreaseStock(orderId);
+        return Result.ok();
     }
 }

@@ -12,4 +12,6 @@ package pers.wayease.duolaimall.ware.service;
 public interface WareService {
 
     Boolean hasStock(Long skuId, Integer num);
+
+    void decreaseStock(Long orderId);
 }

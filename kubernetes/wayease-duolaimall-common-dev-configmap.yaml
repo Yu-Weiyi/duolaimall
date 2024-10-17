@@ -12,7 +12,7 @@ data:
         email: yu_weiyi@outlook.com
     logging:
       level:
-        com.mysql.cj.jdbc: debug
+        org.apache.rocketmq: debug
     mybatis-plus:
       configuration:
         log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -22,6 +22,15 @@ data:
       time-zone: GMT+8
     jwt:
       secret-key: ${JWT_SECRET_KEY}
+    rocketmq:
+      namesrv:
+        addr: 8.137.62.188:9876
+      producer:
+        group: ${spring.application.name}-producer
+      consumer:
+        group: ${spring.application.name}-consumer
+    
+
 ---
 apiVersion: v1
 kind: Secret

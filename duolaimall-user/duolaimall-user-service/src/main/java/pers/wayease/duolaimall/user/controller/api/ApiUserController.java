@@ -28,7 +28,7 @@ public class ApiUserController {
     private UserService userService;
 
     @GetMapping("/getUserAddressListByUserId/{userId}")
-    public Result<List<UserAddressDto>> getUserAddressListByUserId(@PathVariable Long userId) {
+    public Result<List<UserAddressDto>> getUserAddressListByUserId(@PathVariable("userId") Long userId) {
         List<UserAddressDto> userAddressDtoList = userService.getUserAddressListByUserId(userId);
         return Result.ok(userAddressDtoList);
     }

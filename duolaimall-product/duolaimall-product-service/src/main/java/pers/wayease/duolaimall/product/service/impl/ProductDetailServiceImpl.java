@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import pers.wayease.duolaimall.common.constant.RedisConstant;
+import pers.wayease.duolaimall.common.constant.TopicConstant;
+import pers.wayease.duolaimall.common.mq.BaseProducer;
 import pers.wayease.duolaimall.product.converter.SkuInfoConverter;
 import pers.wayease.duolaimall.product.mapper.SkuInfoMapper;
-import pers.wayease.duolaimall.product.mq.producer.SkuIncreaseHotScoreProducer;
 import pers.wayease.duolaimall.product.pojo.dto.*;
 import pers.wayease.duolaimall.product.pojo.model.SkuInfo;
 import pers.wayease.duolaimall.product.service.CategoryService;
@@ -55,10 +56,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Autowired
     private RedissonClient redissonClient;
 
-    @Autowired
-    private SkuIncreaseHotScoreProducer skuIncreaseHotScoreProducer;
-
     private ExecutorService executorService = Executors.newFixedThreadPool(32);
+    @Autowired
+    private BaseProducer baseProducer;
 
     @Override
     public ProductDetailDto getItemBySkuId(Long skuId) {
@@ -72,7 +72,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         // passed
 
 //        searchServiceClient.incrHotScore(skuId);
-        skuIncreaseHotScoreProducer.sendSimplifiedMessageNow(String.valueOf(skuId));
+        baseProducer.sendMessage(TopicConstant.SKU_INCREASE_HOT_SCORE, skuId);
 
         CompletableFuture<SkuInfoDto> skuInfoDtoCompletableFuture = CompletableFuture.supplyAsync(() -> {
             SkuInfo skuInfo = skuInfoMapper.selectObjectById(skuId);

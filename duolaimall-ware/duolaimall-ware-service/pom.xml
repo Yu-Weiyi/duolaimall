@@ -29,6 +29,11 @@
             <version>${revision}-${changelist}</version>
         </dependency>
         <dependency>
+            <groupId>pers.wayease.duolaimall</groupId>
+            <artifactId>duolaimall-order-api</artifactId>
+            <version>${revision}-${changelist}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -78,10 +83,6 @@
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-client-java</artifactId>
         </dependency>
     </dependencies>
     <build>

@@ -1,0 +1,127 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wayease-duolaimall-order-service
+  namespace: wayease-duolaimall
+  labels:
+    app: wayease-duolaimall-order-service
+spec:
+  selector:
+    app: wayease-duolaimall-order-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wayease-duolaimall-order-service-deployment
+  namespace: wayease-duolaimall
+  labels:
+    app: wayease-duolaimall-order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wayease-duolaimall-order-service
+  template:
+    metadata:
+      name: wayease-duolaimall-order-service-deployment
+      labels:
+        app: wayease-duolaimall-order-service
+        project: wayease-duolaimall
+    spec:
+      serviceAccountName: wayease-duolaimall-serviceaccount
+      containers:
+        - name: wayease-duolaimall-order-service
+          image: yuweiyi/duolaimall-order-service:0.7.7-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: common-config-volume
+              mountPath: /app/config/application-common.yaml
+              subPath: application-common.yaml
+            - name: dev-config-volume
+              mountPath: /app/config/application-dev.yaml
+              subPath: application-dev.yaml
+          env:
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-common-dev-secret
+                  key: jwt-secret-key
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-order-service-dev-secret
+                  key: mysql-password
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-order-service-dev-secret
+                  key: redis-password
+      volumes:
+        - name: common-config-volume
+          configMap:
+            name: wayease-duolaimall-common-dev-configmap
+            items:
+              - key: application-common.yaml
+                path: application-common.yaml
+        - name: dev-config-volume
+          configMap:
+            name: wayease-duolaimall-order-service-dev-configmap
+            items:
+              - key: application-dev.yaml
+                path: application-dev.yaml
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wayease-duolaimall-order-service-dev-configmap
+  namespace: wayease-duolaimall
+data:
+  application-dev.yaml: |
+    spring:
+      datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql:replication://wayease-mysql-primary.wayease-middleware.svc.cluster.local:3306,wayease-mysql-secondary.wayease-middleware.svc.cluster.local:3306/wayease_duolaimall_order?
+          readFromMasterWhenNoSlaves=true&allowMasterDownConnections=true&allowSlaveDownConnections=true&
+          connectTimeout=10000&socketTimeout=30000&autoReconnect=true&loadBalanceStrategy=roundRobin&
+          cacheResultSetMetadata=true&useSSL=false&useLocalSessionState=true&cachePrepStmts=true&useServerPrepStmts=true&
+          characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: ${MYSQL_PASSWORD}
+        hikari:
+          connection-test-query: SELECT 1
+          connection-timeout: 60000
+          idle-timeout: 500000
+          max-lifetime: 540000
+          maximum-pool-size: 12
+          minimum-idle: 10
+          pool-name: HikariPool
+          registerMbeans: true
+          logLevel: DEBUG
+      redis:
+        master: redis://wayease-redis-master.wayease-middleware.svc.cluster.local:6379
+        replicas: redis://wayease-redis-replicas.wayease-middleware.svc.cluster.local:6379
+        password: ${REDIS_PASSWORD}
+    logging:
+      level:
+        pers.wayease.duolaimall.order.mapper: debug
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wayease-duolaimall-order-service-dev-secret
+  namespace: wayease-duolaimall
+type: Opaque
+data:
+  mysql-password: MndzeCNFREM=
+  redis-password: MndzeCNFREM=
