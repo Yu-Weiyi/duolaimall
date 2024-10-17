@@ -14,8 +14,8 @@ data:
       level:
         org.apache.rocketmq: debug
     mybatis-plus:
-      configuration:
-        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #  configuration:
+    #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
       mapper-locations: classpath:mapper/*Mapper.xml
     jackson:
       date-format: yyyy-MM-dd HH:mm:ss

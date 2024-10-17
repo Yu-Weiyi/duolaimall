@@ -58,7 +58,7 @@ public class BaseConsumer {
             return null;
         }
         String topicName = consumeStrategy.getTopicConstant().name();
-        DefaultMQPushConsumer defaultMQPushConsumer = new DefaultMQPushConsumer(consumerGroup);
+        DefaultMQPushConsumer defaultMQPushConsumer = new DefaultMQPushConsumer(consumerGroup + ":" + topicName);
         defaultMQPushConsumer.setNamesrvAddr(namesrvAddr);
         defaultMQPushConsumer.subscribe(topicName, "*");
         defaultMQPushConsumer.registerMessageListener(consumeStrategy);

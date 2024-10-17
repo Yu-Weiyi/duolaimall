@@ -28,7 +28,7 @@
         <module>duolaimall-order</module>
     </modules>
     <properties>
-        <revision>0.7.10</revision>
+        <revision>0.7.11</revision>
         <changelist>SNAPSHOT</changelist>
 
         <java.version>17</java.version>
