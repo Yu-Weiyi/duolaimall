@@ -36,3 +36,5 @@ public class ProductServiceApplication {
 // TODO admin operation audit AOP
 // TODO add prometheus metrics
 // TODO spring-retry
+// TODO add logs
+// TODO ELK log collector

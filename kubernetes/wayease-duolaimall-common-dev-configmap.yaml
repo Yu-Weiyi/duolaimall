@@ -5,9 +5,11 @@ metadata:
   namespace: wayease-duolaimall
 data:
   application-common.yaml: |
-    custom:
-      info:
+    info:
+      app:
         project: wayease-duolaimall
+        name: ${spring.application.name}
+        version: ${spring.application.version}
         author: wayease
         email: yu_weiyi@outlook.com
     spring:

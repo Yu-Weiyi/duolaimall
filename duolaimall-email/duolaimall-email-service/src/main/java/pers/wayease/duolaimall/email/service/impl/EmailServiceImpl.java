@@ -38,7 +38,7 @@ public class EmailServiceImpl implements EmailService {
     private String username;
     @Value("${spring.mail.password}")
     private String password;
-    @Value("${custom.info.email}")
+    @Value("${info.app.email}")
     private String testEmail;
 
     @Override

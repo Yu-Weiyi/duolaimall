@@ -1,6 +1,7 @@
 spring:
   application:
     name: ${spring.cloud.kubernetes.namespace}-cart-service
+    version: ${project.version}
   profiles:
     active: common, dev
   server:

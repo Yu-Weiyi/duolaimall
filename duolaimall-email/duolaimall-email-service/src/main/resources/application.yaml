@@ -1,6 +1,7 @@
 spring:
   application:
     name: ${spring.cloud.kubernetes.namespace}-email-service
+    version: ${project.version}
   profiles:
     active: common, dev
   server:
