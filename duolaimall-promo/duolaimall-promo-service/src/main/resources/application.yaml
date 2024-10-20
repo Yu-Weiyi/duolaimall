@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: ${spring.cloud.kubernetes.namespace}-promo-service
+    version: ${project.version}
+  profiles:
+    active: common, dev
+  server:
+    port: 8080
+  main:
+    allow-circular-references: true
+    banner-mode: log
+  cloud:
+    kubernetes:
+      namespace: wayease-duolaimall
+      discovery:
+        enabled: true
+      config:
+        enabled: true
+        sources:
+          - name: ${spring.cloud.kubernetes.namespace}-common-${spring.profiles.active}-configmap
+            namespace: ${spring.cloud.kubernetes.namespace}
+            use-name-as-prefix: false
+          - name: ${spring.application.name}-${spring.profiles.active}-configmap
+            namespace: ${spring.cloud.kubernetes.namespace}
+            use-name-as-prefix: false
+      leader:
+        enabled: true
+        namespace: ${spring.cloud.kubernetes.namespace}
+        config-map-name: ${spring.application.name}-leader-election-configmap
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoint:
+    prometheus:
+      enabled: true
+  health:
+    kubernetes:
+      enabled: true

@@ -1,4 +1,4 @@
-package pers.wayease.duolaimall.product;
+package pers.wayease.duolaimall.promo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
@@ -12,26 +12,21 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
  * @version 1.0
  * @project duolaimall
- * @package pers.wayease.duolaimall.product
- * @name ProductServiceApplication
- * @description Product service application main class.
- * @since 2024-10-06 19:23
+ * @package pers.wayease.duolaimall.promo
+ * @name PromoServiceApplication
+ * @description Promo service application main class.
+ * @since 2024-10-21 01:57
  */
 @SpringBootApplication
 @ComponentScan(basePackages = "pers.wayease.duolaimall")
-@MapperScan("pers.wayease.duolaimall.product.mapper")
+@MapperScan("pers.wayease.duolaimall.promo.mapper")
 @EnableAspectJAutoProxy
 @EnableFeignClients
 @Slf4j
-public class ProductServiceApplication {
+public class PromoServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ProductServiceApplication.class, args);
-        log.info("Product service started successfully.");
+        SpringApplication.run(PromoServiceApplication.class, args);
+        log.info("Promo service started successfully.");
     }
 }
-
-// TODO react speed AOP
-// TODO admin operation audit AOP
-// TODO spring-retry
-// TODO add logs

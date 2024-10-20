@@ -27,9 +27,10 @@
         <module>duolaimall-ware</module>
         <module>duolaimall-order</module>
         <module>duolaimall-pay</module>
+        <module>duolaimall-promo</module>
     </modules>
     <properties>
-        <revision>0.8.26</revision>
+        <revision>0.9.0</revision>
         <changelist>SNAPSHOT</changelist>
 
         <java.version>17</java.version>

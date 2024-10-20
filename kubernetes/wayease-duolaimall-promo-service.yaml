@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wayease-duolaimall-search-service
+  name: wayease-duolaimall-promo-service
   namespace: wayease-duolaimall
   labels:
-    app: wayease-duolaimall-search-service
+    app: wayease-duolaimall-promo-service
 spec:
   selector:
-    app: wayease-duolaimall-search-service
+    app: wayease-duolaimall-promo-service
   ports:
     - protocol: TCP
       port: 8080
@@ -18,26 +18,26 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wayease-duolaimall-search-service-deployment
+  name: wayease-duolaimall-promo-service-deployment
   namespace: wayease-duolaimall
   labels:
-    app: wayease-duolaimall-search-service
+    app: wayease-duolaimall-promo-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: wayease-duolaimall-search-service
+      app: wayease-duolaimall-promo-service
   template:
     metadata:
-      name: wayease-duolaimall-search-service-deployment
+      name: wayease-duolaimall-promo-service-deployment
       labels:
-        app: wayease-duolaimall-search-service
+        app: wayease-duolaimall-promo-service
         project: wayease-duolaimall
     spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
-        - name: wayease-duolaimall-search-service
-          image: yuweiyi/duolaimall-search-service:0.9.0-SNAPSHOT
+        - name: wayease-duolaimall-promo-service
+          image: yuweiyi/duolaimall-promo-service:0.9.0-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -80,6 +80,11 @@ spec:
                 secretKeyRef:
                   name: wayease-duolaimall-common-dev-secret
                   key: redis-password
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-promo-service-dev-secret
+                  key: mysql-password
       volumes:
         - name: common-config-volume
           configMap:
@@ -89,7 +94,7 @@ spec:
                 path: application-common.yaml
         - name: dev-config-volume
           configMap:
-            name: wayease-duolaimall-search-service-dev-configmap
+            name: wayease-duolaimall-promo-service-dev-configmap
             items:
               - key: application-dev.yaml
                 path: application-dev.yaml
@@ -98,11 +103,36 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: wayease-duolaimall-search-service-dev-configmap
+  name: wayease-duolaimall-promo-service-dev-configmap
   namespace: wayease-duolaimall
 data:
   application-dev.yaml: |
     spring:
-      elasticsearch:
-        rest:
-          uris: http://wayease-elasticsearch-master.wayease-middleware.svc.cluster.local:9200
+      datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql:replication://wayease-mysql-primary.wayease-middleware.svc.cluster.local:3306,wayease-mysql-secondary.wayease-middleware.svc.cluster.local:3306/wayease_duolaimall_promo?
+          readFromMasterWhenNoSlaves=true&allowMasterDownConnections=true&allowSlaveDownConnections=true&
+          connectTimeout=10000&socketTimeout=30000&autoReconnect=true&loadBalanceStrategy=roundRobin&
+          cacheResultSetMetadata=true&useSSL=false&useLocalSessionState=true&cachePrepStmts=true&useServerPrepStmts=true&
+          characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: ${MYSQL_PASSWORD}
+        hikari:
+          connection-test-query: SELECT 1
+          connection-timeout: 60000
+          idle-timeout: 500000
+          max-lifetime: 540000
+          maximum-pool-size: 12
+          minimum-idle: 10
+          pool-name: HikariPool
+          registerMbeans: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wayease-duolaimall-promo-service-dev-secret
+  namespace: wayease-duolaimall
+type: Opaque
+data:
+  mysql-password: MndzeCNFREM=
