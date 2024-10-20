@@ -44,7 +44,7 @@ public class ApiOrderController {
         return Result.ok(wareOrderTaskDtoList);
     }
 
-    @PostMapping("/successLockStock/{orderId}/{teskStatus}")
+    @PostMapping("/successLockStock/{orderId}/{taskStatus}")
     public Result<Void> successLockStock(@PathVariable("orderId") String orderId, @PathVariable("taskStatus") String taskStatus) {
         orderService.successLockStock(orderId, taskStatus);
         return Result.ok();

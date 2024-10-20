@@ -3,6 +3,7 @@ package pers.wayease.duolaimall.common.interceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import pers.wayease.duolaimall.common.context.DebugTraceContext;
 import pers.wayease.duolaimall.common.context.UserContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ public class GlobalThreadLocalContextRemoveInterceptor implements HandlerInterce
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler, Exception exception) throws Exception {
         UserContext.removeUserId();
         UserContext.removeUserTempId();
+        DebugTraceContext.removeTraceId();
         log.trace("User context removed.");
     }
 }

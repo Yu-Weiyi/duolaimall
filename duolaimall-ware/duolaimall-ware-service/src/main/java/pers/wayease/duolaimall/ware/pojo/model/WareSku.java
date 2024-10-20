@@ -14,7 +14,7 @@ import pers.wayease.duolaimall.common.pojo.model.BaseEntity;
  * @description Ware SKU class.
  * @since 2024-10-15 20:33
  */
-@TableName("/ware_sku")
+@TableName("ware_sku")
 @Data
 public class WareSku extends BaseEntity {
 

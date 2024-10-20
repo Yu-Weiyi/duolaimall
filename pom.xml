@@ -26,9 +26,10 @@
         <module>duolaimall-cart</module>
         <module>duolaimall-ware</module>
         <module>duolaimall-order</module>
+        <module>duolaimall-pay</module>
     </modules>
     <properties>
-        <revision>0.7.18</revision>
+        <revision>0.8.26</revision>
         <changelist>SNAPSHOT</changelist>
 
         <java.version>17</java.version>
@@ -50,6 +51,8 @@
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
         <bcrypt.version>0.4</bcrypt.version>
         <jwt.version>0.12.6</jwt.version>
+        <logstash.logback.version>7.0</logstash.logback.version>
+        <micrometer.version>1.9.7</micrometer.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -181,6 +184,16 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash.logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

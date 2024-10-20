@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wayease-logstash-configmap
+  namespace: wayease-middleware
+data:
+  logstash.yml: |
+    http.host: "0.0.0.0"
+    xpack.monitoring.elasticsearch.hosts: [ "http://wayease-elasticsearch-master.wayease-middleware.svc.cluster.local:9200" ]

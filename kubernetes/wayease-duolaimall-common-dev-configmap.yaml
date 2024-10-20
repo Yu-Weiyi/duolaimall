@@ -19,10 +19,21 @@ data:
         password: ${REDIS_PASSWORD}
     logging:
       level:
-        org.apache.rocketmq: debug
+        pers.wayease.duolaimall: DEBUG
+        org.apache.rocketmq: DEBUG
+        com.baomidou.mybatisplus: DEBUG
+        org.mybatis: DEBUG
+        io.netty: INFO
+        org.redisson.connection: INFO
+        org.springframework.beans.factory.support: INFO
+        org.springframework.boot.autoconfigure.logging: INFO
+        org.springframework.core.env: INFO
+        org.springframework.context.annotation: INFO
+        com.zaxxer.hikari: INFO
+        org.springframework.data.convert: INFO
     mybatis-plus:
-    #  configuration:
-    #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+      configuration:
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
       mapper-locations: classpath:mapper/*Mapper.xml
     jackson:
       date-format: yyyy-MM-dd HH:mm:ss

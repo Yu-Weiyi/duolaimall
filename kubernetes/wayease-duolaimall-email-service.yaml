@@ -37,7 +37,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-email-service
-          image: yuweiyi/duolaimall-email-service:0.7.17-SNAPSHOT
+          image: yuweiyi/duolaimall-email-service:0.8.6-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

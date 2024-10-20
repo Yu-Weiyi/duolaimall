@@ -1,0 +1,148 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wayease-duolaimall-pay-service
+  namespace: wayease-duolaimall
+  labels:
+    app: wayease-duolaimall-pay-service
+spec:
+  selector:
+    app: wayease-duolaimall-pay-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wayease-duolaimall-pay-service-deployment
+  namespace: wayease-duolaimall
+  labels:
+    app: wayease-duolaimall-pay-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wayease-duolaimall-pay-service
+  template:
+    metadata:
+      name: wayease-duolaimall-pay-service-deployment
+      labels:
+        app: wayease-duolaimall-pay-service
+        project: wayease-duolaimall
+    spec:
+      serviceAccountName: wayease-duolaimall-serviceaccount
+      containers:
+        - name: wayease-duolaimall-pay-service
+          image: yuweiyi/duolaimall-pay-service:0.8.18-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: common-config-volume
+              mountPath: /app/config/application-common.yaml
+              subPath: application-common.yaml
+            - name: dev-config-volume
+              mountPath: /app/config/application-dev.yaml
+              subPath: application-dev.yaml
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-common-dev-secret
+                  key: jwt-secret-key
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-common-dev-secret
+                  key: redis-password
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wayease-duolaimall-pay-service-dev-secret
+                  key: mysql-password
+      volumes:
+        - name: common-config-volume
+          configMap:
+            name: wayease-duolaimall-common-dev-configmap
+            items:
+              - key: application-common.yaml
+                path: application-common.yaml
+        - name: dev-config-volume
+          configMap:
+            name: wayease-duolaimall-pay-service-dev-configmap
+            items:
+              - key: application-dev.yaml
+                path: application-dev.yaml
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wayease-duolaimall-pay-service-dev-configmap
+  namespace: wayease-duolaimall
+data:
+  application-dev.yaml: |
+    spring:
+      datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql:replication://wayease-mysql-primary.wayease-middleware.svc.cluster.local:3306,wayease-mysql-secondary.wayease-middleware.svc.cluster.local:3306/wayease_duolaimall_pay?
+          readFromMasterWhenNoSlaves=true&allowMasterDownConnections=true&allowSlaveDownConnections=true&
+          connectTimeout=10000&socketTimeout=30000&autoReconnect=true&loadBalanceStrategy=roundRobin&
+          cacheResultSetMetadata=true&useSSL=false&useLocalSessionState=true&cachePrepStmts=true&useServerPrepStmts=true&
+          characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: ${MYSQL_PASSWORD}
+        hikari:
+          connection-test-query: SELECT 1
+          connection-timeout: 60000
+          idle-timeout: 500000
+          max-lifetime: 540000
+          maximum-pool-size: 12
+          minimum-idle: 10
+          pool-name: HikariPool
+          registerMbeans: true
+    alipay:
+      config:
+        app_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuReDRQpFKBda+uSrO1Yy/xuAD7HIvr0RCPsQ0zYMtOSsc3p+0UULoXGMpFkNZyXeEQVQLwZH1o+29wwlj9qo54Jv9SaKaJv1ade4wmY0vrWeuAOomWjnwpAEwyOqf7UQKN+eVGHBmS5D7rYkm3qT4/NqVdbJcNjp4p4mW4DiT9r6tRTZb6jlALJRGFTnfbMXLWBCl67LBa1sQNL/pMIO+NHbfe+RY19NenQ5lylh75+CGNvbrBRQPy9ZsZzRa0kztFSpXt2B6fzfIqmVl9LSWlUVQ4eRHOtpue+0jFGTgkRtU6J5LRmoTzA+xkjkhwqjd+ih/IK7Nop2S1mQsC5sowIDAQAB
+        alipay_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA342vWh/qWU8eH4IZ275C7zuTRJyNqiTZ5nNgqn2vdQ67IjXeD+V2CeNVW4KxC9X/oxF/h586fvkdNzcWLasWf24aqPg1MYqDcHPzGLwwJFl4llgwPAHcEI3Tk2W16uY0eYRpPhOfbcymYkpbHqjQZ6V7KnveL962ZJ7Cxh/9SAshdHCGXNl1Gc2xqfRZZd1iGBYvFt94YEUsIrAkKCJdJsJ2i645VPEkb4orqku8zwFqd9gRozzs3+EcDpcfNlF5S7zyUvmIS39kuv/8DUkYHVV7zLixUGea0712OzoTGC1mL1J8anas343CRqdhtyv8egxCZvCX9Xz+xEQDz2+S2wIDAQAB
+        alipay_url: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+        app_id: 9021000141639871
+        app_private_key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC5F4NFCkUoF1r65Ks7VjL/G4APsci+vREI+xDTNgy05Kxzen7RRQuhcYykWQ1nJd4RBVAvBkfWj7b3DCWP2qjngm/1Jopom/Vp17jCZjS+tZ64A6iZaOfCkATDI6p/tRAo355UYcGZLkPutiSbepPj82pV1slw2OniniZbgOJP2vq1FNlvqOUAslEYVOd9sxctYEKXrssFrWxA0v+kwg740dt975FjX016dDmXKWHvn4IY29usFFA/L1mxnNFrSTO0VKle3YHp/N8iqZWX0tJaVRVDh5Ec62m577SMUZOCRG1TonktGahPMD7GSOSHCqN36KH8grs2inZLWZCwLmyjAgMBAAECggEAZmU7mdY0rBk/m80lbY4iaD8ueYBBLkQqSG2cwTwFi412WexKfDtWU9odlE4vvACW+ZOW6GzxESIwdjuiDBNLncfraBQKPhUJj6Rn8iPYyihvxh1ACJ6gmGJUQCBbEot4hSQw0z3BfJy7uDPLzLfjWRgwm4xXpLZbraMQVU7X5JStn0J2tg1+8wVcSIvve4LlsnqwEFom6yMxbhEI2fT0IrmKjwUxsKUtwTXFArjm32SMpu93UDsGkAFgckKErY9gh5eHsAQ0UTI5x+wdZRO2WMjUWmNV9w7B7R3rJef5ZWGH5fONFU08z2XVDPX1khmCZ1xlqLAH/pOtQrblGLxwAQKBgQD2wbWYe5N5Qt0tJnVxx0hYFk43zoTj7tYYbcpgHKZFwt3cVEEaoCtlA0AU6r7n8n83ux/jeZINU/oTuocoXQOYluuJjD2sGZH3+qwYrrMuRWd1p9lNDniZVCHyM8fj2vSvO1VvMCL6vICZ05tsTbmm6RuUsYvaQv1YirYyeFXQwQKBgQDABnbSvkc1DurzCqtSaXbwbAZGW7t5sVGXCQSexrY8RwdVpAjWovThMK7KHvyY/4fqe5Y/mWl417hu8v8hJaEEBNaaAf1Y8HTEZsMn1R6LI57miIikk3++H/yVzpL0eUD2TagwHGkbLpJ3LHFZcB2NKK47H+GFkJ3Aurvw+XkyYwKBgQDhnn6/XIacQoHfLaIHFZLVUBfWuRMTIidKEOEQ/kEd2i5nrfYVNUxYQR+PwJArnrOproRaxqa/XwByl4PLaTjHhX75tmwRdxPbbK18qAgXj8gocP+kkE2+zIl5XtUvRt2hd5wHXTkuj7r6a9xZq7vLnKrmS2y3dbcWBUbQYOz+QQKBgGztPcoeFdaLN8vWaYi+OrH3FTgkIRzO8TFz9CL9JbLbt9Vkz36xwadcLkqJeVBw43Cn2nsJU0MxW3XUcdUju0rEU9fY+RXSkOo4QMv/oOvcsO6k1J5G7Ve0XVu9aq8zeR4+vwFLnHPG316q30GUz66bPPpdA1j4yAPj6Wiwm4dxAoGAGT7mww21RRfaxw5qvSTA4iA/VB9Rhd/sb3UnFSRbJvPEtPi6Nyh9cGydH7nnHkm+nzSEtnn2qiWDrw8idqR8zKKGtspVHHJ4eJTEeE1x5hBXp/UCZriqayhuXyHWTYKnmDdZDoEqPTZX5BmYPxixNMYRjh343tErJRU88ro0F1s=
+        notify_payment_url: http://8.137.62.188:80/pay/alipay/callback/notify
+        return_order_url: http://localhost:8000/#/pay/success
+        return_payment_url: http://localhost:80/pay/alipay/callback/return
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wayease-duolaimall-pay-service-dev-secret
+  namespace: wayease-duolaimall
+type: Opaque
+data:
+  mysql-password: MndzeCNFREM=

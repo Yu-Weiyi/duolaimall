@@ -8,6 +8,7 @@ spring:
     port: 8080
   main:
     allow-circular-references: true
+    banner-mode: log
   cloud:
     kubernetes:
       namespace: wayease-duolaimall
@@ -31,9 +32,13 @@ management:
     web:
       exposure:
         include: "*"
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoint:
+    prometheus:
+      enabled: true
   health:
     kubernetes:
       enabled: true
-  metrics:
-    enable:
-      hikari: true

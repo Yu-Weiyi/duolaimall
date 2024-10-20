@@ -1,12 +1,11 @@
 package pers.wayease.duolaimall.ware.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pers.wayease.duolaimall.common.constant.ResultCodeEnum;
-import pers.wayease.duolaimall.common.exception.BaseException;
+import pers.wayease.duolaimall.common.context.DebugTraceContext;
 import pers.wayease.duolaimall.order.pojo.dto.OrderInfoDto;
 import pers.wayease.duolaimall.ware.client.OrderServiceClient;
 import pers.wayease.duolaimall.ware.converter.WareOrderTaskConverter;
@@ -22,6 +21,7 @@ import pers.wayease.duolaimall.ware.pojo.model.WareSku;
 import pers.wayease.duolaimall.ware.service.WareService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 为伊WaYease <a href="mailto:yu_weiyi@outlook.com">yu_weiyi@outlook.com</a>
@@ -33,6 +33,7 @@ import java.util.*;
  * @since 2024-10-15 20:57
  */
 @Service
+@Slf4j
 public class WareServiceImpl implements WareService {
 
     @Autowired
@@ -65,11 +66,12 @@ public class WareServiceImpl implements WareService {
         WareOrderTask wareOrderTask = wareOrderTaskConverter.orderInfoDto2wareOrderTask(orderInfoDto);
         wareOrderTask.setTaskStatus(TaskStatusEnum.PAID.name());
 
+        log.debug("{} decreaseStock call saveWareOrderTask(wareOrderTask).", DebugTraceContext.getNextStyledTraceId());
         saveWareOrderTask(wareOrderTask);
 
         List<WareOrderTask> orderTaskList = checkOrderSplit(wareOrderTask);
 
-        if (orderTaskList != null && orderTaskList.size() >= 2) {
+        if (orderTaskList != null && orderTaskList.size() > 1) {
             for (WareOrderTask orderTask : orderTaskList) {
                 lockStock(orderTask);
             }
@@ -81,28 +83,32 @@ public class WareServiceImpl implements WareService {
     @Transactional
     public List<WareOrderTask> checkOrderSplit(WareOrderTask wareOrderTask) {
         List<WareOrderTaskDetail> wareOrderTaskDetailList = wareOrderTask.getDetails();
-        List<String> skuIdList = new ArrayList<>();
-        for (WareOrderTaskDetail wareOrderTaskDetail : wareOrderTaskDetailList) {
-            skuIdList.add(wareOrderTaskDetail.getSkuId());
-        }
+
+        List<String> skuIdList = wareOrderTaskDetailList.stream()
+                .map(WareOrderTaskDetail::getSkuId)
+                .collect(Collectors.toList());
+
+        // SKU list group by ware ID
         List<WareSkuDto> wareSkuDtoList = getWareSkuDto(skuIdList);
 
         if(wareSkuDtoList.size() == 1) {
+            // all in one ware
             WareSkuDto wareSkuDto = wareSkuDtoList.get(0);
             wareOrderTask.setWareId(wareSkuDto.getWareId());
+            wareOrderTaskMapper.updateById(wareOrderTask);
         } else {
+            // more than one wares, need spilt
             String orderId = wareOrderTask.getOrderId();
             List<WareOrderTaskDto> wareOrderTaskDtoList = orderServiceClient.orderSplit(orderId, wareSkuDtoList).getData();
             List<WareOrderTask> wareOrderTaskList = wareOrderTaskConverter.wareOrderTaskDtoList2PoList(wareOrderTaskDtoList);
-            if (wareOrderTaskDtoList.size() >= 2) {
-                for (WareOrderTask subOrderTask : wareOrderTaskList) {
-                    subOrderTask.setTaskStatus(TaskStatusEnum.DEDUCTED.name());
-                    saveWareOrderTask(subOrderTask);
+            if (wareOrderTaskDtoList.size() > 1) {
+                for (WareOrderTask subWareOrderTask : wareOrderTaskList) {
+                    subWareOrderTask.setTaskStatus(TaskStatusEnum.DEDUCTED.name());
+                    log.debug("{} checkOrderSplit called saveWareOrderTask(subWareOrderTask): {}.", DebugTraceContext.getNextStyledTraceId(), subWareOrderTask);
+                    saveWareOrderTask(subWareOrderTask);
                 }
                 updateStatusWareOrderTaskByOrderId(wareOrderTask.getOrderId(), TaskStatusEnum.SPLIT);
                 return wareOrderTaskList;
-            } else {
-                throw new BaseException(ResultCodeEnum.FAIL);
             }
         }
         return null;
@@ -113,8 +119,9 @@ public class WareServiceImpl implements WareService {
         lambdaQueryWrapper
                 .in(WareSku::getSkuId, skuIdList);
         List<WareSku> wareSkuList = wareSkuMapper.selectList(lambdaQueryWrapper);
-        Map<String, List<String>> wareSkuMap = new HashMap<>();
 
+        // divide
+        Map<String, List<String>> wareSkuMap = new HashMap<>();
         for (WareSku wareSku : wareSkuList) {
             List<String> wareSkuIdList = wareSkuMap.get(wareSku.getWarehouseId());
             if (wareSkuIdList == null) {
@@ -124,10 +131,10 @@ public class WareServiceImpl implements WareService {
             wareSkuMap.put(wareSku.getWarehouseId(), wareSkuIdList);
         }
         List<WareSkuDto> wareSkuDtoList = wareSkuMap.keySet().stream()
-                .map(key -> {
+                .map(wareId -> {
                     WareSkuDto wareSkuDto = new WareSkuDto();
-                    wareSkuDto.setWareId(key);
-                    wareSkuDto.setSkuIds(wareSkuMap.get(key));
+                    wareSkuDto.setWareId(wareId);
+                    wareSkuDto.setSkuIds(wareSkuMap.get(wareId));
                     return wareSkuDto;
                 })
                 .toList();
@@ -148,11 +155,14 @@ public class WareServiceImpl implements WareService {
     }
 
     public void updateStatusWareOrderTaskByOrderId(String orderId, TaskStatusEnum taskStatusEnum) {
-        QueryWrapper<WareOrderTask> queryWrapper = new QueryWrapper();
-        queryWrapper.in("order_id", orderId);
+        LambdaQueryWrapper<WareOrderTask> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper
+                .in(WareOrderTask::getOrderId, orderId);
+
         WareOrderTask wareOrderTask = new WareOrderTask();
         wareOrderTask.setTaskStatus(taskStatusEnum.name());
-        wareOrderTaskMapper.update(wareOrderTask, queryWrapper);
+
+        wareOrderTaskMapper.update(wareOrderTask, lambdaQueryWrapper);
     }
 
     @Transactional
@@ -193,30 +203,36 @@ public class WareServiceImpl implements WareService {
             updateStatusWareOrderTaskByOrderId(wareOrderTask.getOrderId(), TaskStatusEnum.DEDUCTED);
         }
 
-        // 远程调用顶订单服务，修改订单状态
+        // update order status
         orderServiceClient.successLockStock(wareOrderTask.getOrderId(),wareOrderTask.getTaskStatus());
-
-        return;
     }
 
     @Transactional
     public WareOrderTask saveWareOrderTask(WareOrderTask wareOrderTask) {
-        wareOrderTask.setCreateTime(new Date());
+        Date now = new Date();
+        wareOrderTask.setCreateTime(now);
+        wareOrderTask.setUpdateTime(now);
 
-        QueryWrapper<WareOrderTask> queryWrapper = new QueryWrapper();
-        queryWrapper.in("order_id", wareOrderTask.getOrderId());
-        WareOrderTask wareOrderTaskOrigin = wareOrderTaskMapper.selectOne(queryWrapper);
+        // check existence
+        LambdaQueryWrapper<WareOrderTask> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper
+                .in(WareOrderTask::getOrderId, wareOrderTask.getOrderId());
+        WareOrderTask wareOrderTaskOrigin = wareOrderTaskMapper.selectOne(lambdaQueryWrapper);
         if (wareOrderTaskOrigin != null) {
+            // done before
+            log.debug("{} done before: return wareOrderTaskOrigin: {}.", DebugTraceContext.getNextStyledTraceId(), wareOrderTaskOrigin);
             return wareOrderTaskOrigin;
         }
 
         wareOrderTaskMapper.insert(wareOrderTask);
 
-        List<WareOrderTaskDetail> wareOrderTaskDetails = wareOrderTask.getDetails();
-        for (WareOrderTaskDetail wareOrderTaskDetail : wareOrderTaskDetails) {
+        List<WareOrderTaskDetail> wareOrderTaskDetailList = wareOrderTask.getDetails();
+        for (WareOrderTaskDetail wareOrderTaskDetail : wareOrderTaskDetailList) {
             wareOrderTaskDetail.setTaskId(wareOrderTask.getId());
+            log.debug("{} wareOrderTaskDetailMapper.insert(wareOrderTaskDetail): {}.", DebugTraceContext.getNextStyledTraceId(), wareOrderTaskDetail);
             wareOrderTaskDetailMapper.insert(wareOrderTaskDetail);
         }
+
         return wareOrderTask;
     }
 }

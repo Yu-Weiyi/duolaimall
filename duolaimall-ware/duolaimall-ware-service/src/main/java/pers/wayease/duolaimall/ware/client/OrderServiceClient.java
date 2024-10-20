@@ -30,6 +30,6 @@ public interface OrderServiceClient {
     @PostMapping("/api/order/orderSplit/{orderId}")
     public Result<List<WareOrderTaskDto>> orderSplit(@PathVariable("orderId") String orderId, @RequestBody List<WareSkuDto> wareSkuDtoList);
 
-    @PostMapping("/api/order/successLockStock/{orderId}/{teskStatus}")
+    @PostMapping("/api/order/successLockStock/{orderId}/{taskStatus}")
     public Result<Void> successLockStock(@PathVariable("orderId") String orderId, @PathVariable("taskStatus") String taskStatus);
 }

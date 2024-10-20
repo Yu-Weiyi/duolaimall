@@ -37,4 +37,7 @@ public class RedisConstant {
 
     // store
     public static final String ORDER_TRADE_CODE = "order:trade:code";
+
+    // pay
+    public static final String PAY_CALLBACK_NOTIFY = "pay:callback:notify";
 }

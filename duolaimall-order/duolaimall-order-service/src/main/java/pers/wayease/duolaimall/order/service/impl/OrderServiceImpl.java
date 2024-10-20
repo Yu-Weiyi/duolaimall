@@ -10,9 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.wayease.duolaimall.cart.pojo.dto.CartInfoDto;
 import pers.wayease.duolaimall.common.constant.ResultCodeEnum;
+import pers.wayease.duolaimall.common.context.DebugTraceContext;
 import pers.wayease.duolaimall.common.context.UserContext;
 import pers.wayease.duolaimall.common.exception.BaseException;
+import pers.wayease.duolaimall.common.result.Result;
 import pers.wayease.duolaimall.common.util.DateUtil;
+import pers.wayease.duolaimall.common.util.TimeUtil;
 import pers.wayease.duolaimall.order.client.CartServiceClient;
 import pers.wayease.duolaimall.order.client.ProductServiceClient;
 import pers.wayease.duolaimall.order.client.UserServiceClient;
@@ -200,6 +203,13 @@ public  class OrderServiceImpl implements OrderService {
                 .eq(OrderInfo::getUserId, UserContext.getUserId());
         orderInfoMapper.selectPage(pageParam, lambdaQueryWrapper);
         List<OrderInfo> orderInfoList = pageParam.getRecords();
+        // time zone +8
+        orderInfoList.stream()
+                .forEach(orderInfo -> {
+                    orderInfo.setCreateTime(TimeUtil.changeToCST(orderInfo.getCreateTime()));
+                    orderInfo.setUpdateTime(TimeUtil.changeToCST(orderInfo.getUpdateTime()));
+                    orderInfo.setExpireTime(TimeUtil.changeToCST(orderInfo.getExpireTime()));
+                });
         List<OrderInfoDto> orderInfoDtoList = orderInfoConverter.orderInfoPoList2DtoList(orderInfoList);
 
         ExecutorService executorService = Executors.newFixedThreadPool(32);
@@ -234,18 +244,21 @@ public  class OrderServiceImpl implements OrderService {
     @Override
     public OrderInfoDto getOrderInfo(Long orderId) {
         OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+
+        LambdaQueryWrapper<OrderDetail> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper
+                .eq(OrderDetail::getOrderId, orderId);
+        List<OrderDetail> orderDetailList = orderDetailMapper.selectList(lambdaQueryWrapper);
+        orderInfo.setOrderDetailList(orderDetailList);
+
         OrderInfoDto orderInfoDto = orderInfoConverter.orderInfoPo2Dto(orderInfo);
-        Map<String, Object> searchMap = new HashMap<>();
-        searchMap.put("order_id", orderId);
-        List<OrderDetail> orderDetailList = orderDetailMapper.selectByMap(searchMap);
-        List<OrderDetailDto> orderDetailDtoList = orderDetailConverter.orderDetailPoList2DtoList(orderDetailList);
-        orderInfoDto.setOrderDetailList(orderDetailDtoList);
         return orderInfoDto;
     }
 
     @Override
     public void successPay(Long orderId) {
         OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+        log.debug("{} orderInfo: {}.", DebugTraceContext.getNextStyledTraceId(), orderInfo);
 
         orderInfo.setOrderStatus(OrderStatusEnum.PAID.name());
         int updateRows = orderInfoMapper.updateById(orderInfo);
@@ -253,8 +266,11 @@ public  class OrderServiceImpl implements OrderService {
             // failed to update order status
             throw new BaseException(ResultCodeEnum.FAIL);
         }
+        // paid
 
-        Boolean isSuccess =  ResultCodeEnum.SUCCESS.equals(wareServiceClient.decreaseStock(orderId).getCode());
+        Result<Void> decreaseStockResult = wareServiceClient.decreaseStock(orderId);
+        Boolean isSuccess =  ResultCodeEnum.SUCCESS.getCode().equals(decreaseStockResult.getCode());
+        log.debug("{} isSuccess: {}", DebugTraceContext.getNextStyledTraceId(), isSuccess);
         if (!isSuccess) {
             // failed to decrease stock
             throw new BaseException(ResultCodeEnum.FAIL);
@@ -265,6 +281,7 @@ public  class OrderServiceImpl implements OrderService {
     @Override
     public List<WareOrderTaskDto> orderSplit(String orderId, List<WareSkuDto> wareSkuDTOList) {
         OrderInfoDto orderInfoDto = getOrderInfo(Long.valueOf(orderId));
+        log.debug("{} orderInfoDto: {}.", DebugTraceContext.getNextStyledTraceId(), orderInfoDto);
         if (orderInfoDto == null) {
             return new ArrayList<>();
         }
@@ -272,18 +289,24 @@ public  class OrderServiceImpl implements OrderService {
         List<OrderDetailDto> orderDetailDtoList = orderInfoDto.getOrderDetailList();
         List<WareOrderTaskDto> wareOrderTaskDtoList = wareSkuDTOList.stream()
                 .map(wareSkuDto -> {
+                    log.debug("{} wareSkuDto: {}.", DebugTraceContext.getNextStyledTraceId(), wareSkuDto);
                     String wareId = wareSkuDto.getWareId();
+                    log.debug("{} wareId: {}.", DebugTraceContext.getNextStyledTraceId(), wareId);
                     List<String> skuIdList = wareSkuDto.getSkuIds();
+                    log.debug("{} skuIdList: {}", DebugTraceContext.getNextStyledTraceId(), skuIdList);
 
                     List<OrderDetail> subOrderDetailList = new ArrayList<>();
                     for (OrderDetailDto orderDetailDto : orderDetailDtoList) {
-                        if (skuIdList.contains(orderDetailDto.getSkuId())) {
+                        log.debug("{} skuIdList: {}, OrderDetailDto: {}, skuIdList.contains(orderDetailDto.getSkuId(): {}.)", DebugTraceContext.getNextStyledTraceId(), skuIdList, orderDetailDto, skuIdList.contains(orderDetailDto.getSkuId()));
+                        if (skuIdList.contains(String.valueOf(orderDetailDto.getSkuId()))) {
                             OrderDetail subOrderDetail = orderDetailConverter.orderDetailDto2Po(orderDetailDto);
                             subOrderDetail.setId(null);
                             subOrderDetailList.add(subOrderDetail);
+                            log.debug("{} subOrderDetailList.add(subOrderDetail {})", DebugTraceContext.getNextStyledTraceId(), subOrderDetail);
                         }
                     }
 
+                    log.debug("{} !subOrderDetailList.isEmpty(): {}", DebugTraceContext.getNextStyledTraceId(), !subOrderDetailList.isEmpty());
                     if (!subOrderDetailList.isEmpty()) {
                         OrderInfo subOrderInfo = orderInfoConverter.orderInfoDto2Po(orderInfoDto);
                         subOrderInfo.setParentOrderId(Long.valueOf(orderId));
@@ -302,14 +325,16 @@ public  class OrderServiceImpl implements OrderService {
                 })
                 .filter(Objects::nonNull)
                 .toList();
+        log.debug("{} wareOrderTaskDtoList: {}", DebugTraceContext.getNextStyledTraceId(), wareOrderTaskDtoList);
 
         // update original order info
         OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setOrderStatus(OrderStatusEnum.SPLIT.name());
         orderInfo.setId(orderInfoDto.getId());
+        orderInfo.setOrderStatus(OrderStatusEnum.SPLIT.name());
         int updateRows = orderInfoMapper.updateById(orderInfo);
         if (updateRows < 1) {
             // failed to update original order info
+            log.debug("{} failed to update order info.", DebugTraceContext.getNextStyledTraceId());
             throw new BaseException(ResultCodeEnum.FAIL);
         }
 
@@ -320,11 +345,13 @@ public  class OrderServiceImpl implements OrderService {
     public void successLockStock(String orderId, String taskStatus) {
         String orderStatus = TaskStatusEnum.DEDUCTED.name().equals(taskStatus) ? OrderStatusEnum.WAIT_DELEVER.name() : OrderStatusEnum.STOCK_EXCEPTION.name();
 
-        OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setId(Long.valueOf(orderId));
         orderInfo.setOrderStatus(orderStatus);
         int updateRows = orderInfoMapper.updateById(orderInfo);
         if (updateRows < 1) {
             // failed to update order info
+            log.warn("Update order info failed, orderId:{}.", orderId);
             throw new BaseException(ResultCodeEnum.FAIL);
         }
     }

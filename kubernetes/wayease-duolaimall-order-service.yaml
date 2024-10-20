@@ -37,7 +37,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-order-service
-          image: yuweiyi/duolaimall-order-service:0.7.12-SNAPSHOT
+          image: yuweiyi/duolaimall-order-service:0.8.23-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -107,6 +107,7 @@ data:
           minimum-idle: 10
           pool-name: HikariPool
           registerMbeans: true
+          logLevel: DEBUG
 ---
 apiVersion: v1
 kind: Secret
