@@ -37,7 +37,7 @@ spec:
       serviceAccountName: wayease-duolaimall-serviceaccount
       containers:
         - name: wayease-duolaimall-pay-service
-          image: yuweiyi/duolaimall-pay-service:0.9.0-SNAPSHOT
+          image: yuweiyi/duolaimall-pay-service:0.9.18-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
