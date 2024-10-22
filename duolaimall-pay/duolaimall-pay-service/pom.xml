@@ -89,6 +89,10 @@
             <artifactId>alipay-sdk-java</artifactId>
             <version>4.35.71.ALL</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

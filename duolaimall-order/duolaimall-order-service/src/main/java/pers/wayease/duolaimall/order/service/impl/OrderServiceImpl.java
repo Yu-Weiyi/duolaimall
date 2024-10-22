@@ -10,22 +10,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.wayease.duolaimall.cart.pojo.dto.CartInfoDto;
 import pers.wayease.duolaimall.common.constant.ResultCodeEnum;
+import pers.wayease.duolaimall.common.constant.TopicConstant;
 import pers.wayease.duolaimall.common.context.DebugTraceContext;
 import pers.wayease.duolaimall.common.context.UserContext;
 import pers.wayease.duolaimall.common.exception.BaseException;
+import pers.wayease.duolaimall.common.mq.BaseProducer;
 import pers.wayease.duolaimall.common.result.Result;
 import pers.wayease.duolaimall.common.util.DateUtil;
 import pers.wayease.duolaimall.common.util.TimeUtil;
-import pers.wayease.duolaimall.order.client.CartServiceClient;
-import pers.wayease.duolaimall.order.client.ProductServiceClient;
-import pers.wayease.duolaimall.order.client.UserServiceClient;
-import pers.wayease.duolaimall.order.client.WareServiceClient;
+import pers.wayease.duolaimall.email.pojo.param.OrderEmailParam;
+import pers.wayease.duolaimall.order.client.*;
 import pers.wayease.duolaimall.order.converter.CartInfoConverter;
 import pers.wayease.duolaimall.order.converter.OrderDetailConverter;
 import pers.wayease.duolaimall.order.converter.OrderInfoConverter;
 import pers.wayease.duolaimall.order.mapper.OrderDetailMapper;
 import pers.wayease.duolaimall.order.mapper.OrderInfoMapper;
 import pers.wayease.duolaimall.order.pojo.constant.OrderStatusEnum;
+import pers.wayease.duolaimall.order.pojo.constant.OrderTypeEnum;
 import pers.wayease.duolaimall.order.pojo.dto.OrderDetailDto;
 import pers.wayease.duolaimall.order.pojo.dto.OrderInfoDto;
 import pers.wayease.duolaimall.order.pojo.dto.OrderTradeDto;
@@ -34,6 +35,7 @@ import pers.wayease.duolaimall.order.pojo.model.OrderInfo;
 import pers.wayease.duolaimall.order.pojo.param.OrderDetailParam;
 import pers.wayease.duolaimall.order.pojo.param.OrderInfoParam;
 import pers.wayease.duolaimall.order.service.OrderService;
+import pers.wayease.duolaimall.pay.pojo.dto.PaymentInfoDto;
 import pers.wayease.duolaimall.user.pojo.dto.UserAddressDto;
 import pers.wayease.duolaimall.ware.pojo.constant.TaskStatusEnum;
 import pers.wayease.duolaimall.ware.pojo.dto.WareOrderTaskDto;
@@ -57,7 +59,7 @@ import java.util.concurrent.Executors;
  */
 @Service
 @Slf4j
-public  class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderInfoMapper orderInfoMapper;
@@ -72,6 +74,8 @@ public  class OrderServiceImpl implements OrderService {
     private WareServiceClient wareServiceClient;
     @Autowired
     private ProductServiceClient productServiceClient;
+    @Autowired
+    private PayServiceClient payServiceClient;
 
     @Autowired
     private CartInfoConverter cartInfoConverter;
@@ -79,6 +83,8 @@ public  class OrderServiceImpl implements OrderService {
     private OrderInfoConverter orderInfoConverter;
     @Autowired
     private OrderDetailConverter orderDetailConverter;
+    @Autowired
+    private BaseProducer baseProducer;
 
 //    @Autowired
 //    private DelayOrderProducer delayOrderProducer;
@@ -157,8 +163,8 @@ public  class OrderServiceImpl implements OrderService {
         cartServiceClient.removeCartProductsInOrder(UserContext.getStringUserId(), skuIdList);
 
         // set delay callback
-        // FIXME delayOrderProducer
-//        delayOrderProducer.sendSimplifiedMessageAfter(String.valueOf(orderId), Duration.ofMinutes(30L));
+//        baseProducer.sendDelayMessage(TopicConstant.DELAY_ORDER, orderId, 16);// L6 = 2min, L16 = 30 min
+        baseProducer.sendDelayMessage(TopicConstant.DELAY_ORDER, orderId, 6);
         return orderId;
     }
 
@@ -169,7 +175,7 @@ public  class OrderServiceImpl implements OrderService {
         orderInfo.sumTotalAmount();
         orderInfo.setOutTradeNo("NO" + IdWorker.getId());
         orderInfo.setTradeBody(orderInfo.getOrderDetailList().get(0).getSkuName());
-        Date expireTime = DateUtil.datePlusSeconds(new Date(), 60 * 30);// 0.5 h
+        Date expireTime = DateUtil.datePlusSeconds(new Date(), 60 * 2);// 0.5 h -> 2 min
         orderInfo.setExpireTime(expireTime);
 
         int orderInfoUpdateRows = orderInfoMapper.insert(orderInfo);
@@ -276,6 +282,16 @@ public  class OrderServiceImpl implements OrderService {
             throw new BaseException(ResultCodeEnum.FAIL);
         }
         // success
+
+        // send email
+        OrderInfo finalOrderInfo = orderInfoMapper.selectById(orderId);
+        Long userId = finalOrderInfo.getUserId();
+        String email = userServiceClient.getUserEmailBuUserId(userId).getData();
+        OrderEmailParam orderEmailParam = new OrderEmailParam();
+
+        orderEmailParam.setEmail(email);
+        orderEmailParam.setUrl("http://localhost:8000/#/myOrder");
+        baseProducer.sendMessage(TopicConstant.SEND_EMAIL, orderEmailParam);
     }
 
     @Override
@@ -353,6 +369,55 @@ public  class OrderServiceImpl implements OrderService {
             // failed to update order info
             log.warn("Update order info failed, orderId:{}.", orderId);
             throw new BaseException(ResultCodeEnum.FAIL);
+        }
+    }
+
+    @Override
+    public Long saveScekillOrder(OrderInfoParam orderInfoParam) {
+        OrderInfo orderInfo = orderInfoConverter.orderInfoParam2Po(orderInfoParam);
+        orderInfo.setOrderType(OrderTypeEnum.PROMO_ORDER.name());
+        orderInfo.getOrderDetailList().get(0).setId(null);
+        Long orderId = saveOrderInfo(orderInfo);
+        return orderId;
+    }
+
+    @Override
+    public void execExpiredOrder(Long orderId) {
+        OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+
+        String outTradeNo = orderInfo.getOutTradeNo();
+        PaymentInfoDto paymentInfoDTOByOutTradeNo = payServiceClient.getPaymentInfoDtoByOutTradeNo(outTradeNo);
+        if (paymentInfoDTOByOutTradeNo!=null){
+
+            Result<String> alipayInfoResult = payServiceClient.getAlipayInfo(outTradeNo);
+            String status = alipayInfoResult.getData();
+
+            if (status==null||"TRADE_CLOSED".equals(status)){
+
+                closeOrder(orderInfo);
+                payServiceClient.closePaymentInfo(outTradeNo);
+
+                log.info("关闭订单/支付信息");
+            }
+            else if ("WAIT_BUYER_PAY".equals(status)){
+
+                closeOrder(orderInfo);
+                payServiceClient.closePaymentInfo(outTradeNo);
+                payServiceClient.closeAlipay(outTradeNo);
+                log.info("关闭订单/支付信息/关闭交易");
+            }
+            else if ("TRADE_SUCCESS".equals(status)){
+                log.info("付款成功");
+            }
+        }else {
+            closeOrder(orderInfo);
+        }
+    }
+
+    public void closeOrder(OrderInfo orderInfo){
+        if (Objects.equals(orderInfo.getOrderStatus(), OrderStatusEnum.UNPAID.name())){
+            orderInfo.setOrderStatus(OrderStatusEnum.CLOSED.name());
+            orderInfoMapper.updateById(orderInfo);
         }
     }
 }

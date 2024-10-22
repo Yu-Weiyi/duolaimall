@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pers.wayease.duolaimall.common.result.Result;
 import pers.wayease.duolaimall.order.pojo.dto.OrderInfoDto;
+import pers.wayease.duolaimall.order.pojo.param.OrderInfoParam;
 import pers.wayease.duolaimall.order.service.OrderService;
 import pers.wayease.duolaimall.ware.pojo.dto.WareOrderTaskDto;
 import pers.wayease.duolaimall.ware.pojo.dto.WareSkuDto;
@@ -48,5 +49,11 @@ public class ApiOrderController {
     public Result<Void> successLockStock(@PathVariable("orderId") String orderId, @PathVariable("taskStatus") String taskStatus) {
         orderService.successLockStock(orderId, taskStatus);
         return Result.ok();
+    }
+
+    @PostMapping("/seckill/submitOrder")
+    public Result<Long> submitSeckillOrder(@RequestBody OrderInfoParam orderInfo) {
+        Long result = orderService.saveScekillOrder(orderInfo);
+        return Result.ok(result);
     }
 }

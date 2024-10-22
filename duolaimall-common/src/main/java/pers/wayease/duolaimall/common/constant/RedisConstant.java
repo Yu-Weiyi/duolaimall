@@ -40,4 +40,11 @@ public class RedisConstant {
 
     // pay
     public static final String PAY_CALLBACK_NOTIFY = "pay:callback:notify";
+
+    // promo
+    public static final String PROMO_SECKILL_GOODS = "promo:seckill:goods";
+    public static final String PROMO_SECKILL_GOODS_STOCK = "promo:seckill:goods:stock";
+    public static final String PROMO_SUBMIT_ORDER = "promo:submit:order";
+    public static final String PROMO_USER_ORDERED_FLAG = "promo:user:ordered:flag";
+    public static final String REDUCE_STOCK_STATE = "reduce:stock:state";
 }

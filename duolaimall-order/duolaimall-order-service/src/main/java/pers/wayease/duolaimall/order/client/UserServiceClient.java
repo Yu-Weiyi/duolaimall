@@ -22,4 +22,7 @@ public interface UserServiceClient {
 
     @GetMapping("/api/user/getUserAddressListByUserId/{userId}")
     public Result<List<UserAddressDto>> getUserAddressListByUserId(@PathVariable("userId") Long userId);
+
+    @GetMapping("/api/user/getUserEmailBuUserId/{userId}")
+    public Result<String> getUserEmailBuUserId(@PathVariable("userId") Long userId);
 }

@@ -34,4 +34,3 @@ public class ProductServiceApplication {
 // TODO react speed AOP
 // TODO admin operation audit AOP
 // TODO spring-retry
-// TODO add logs

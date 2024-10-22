@@ -1,6 +1,7 @@
 package pers.wayease.duolaimall.email.service;
 
 import org.springframework.lang.Nullable;
+import pers.wayease.duolaimall.email.pojo.param.OrderEmailParam;
 
 import javax.mail.MessagingException;
 
@@ -18,4 +19,6 @@ public interface EmailService {
     void testConnection();
 
     void test(@Nullable String to) throws MessagingException;
+
+    void sendOrderEmail(OrderEmailParam orderEmailParam) throws MessagingException;
 }

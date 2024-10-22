@@ -15,5 +15,9 @@ public enum TopicConstant {
     SKU_OFF_SALE,
     SKU_INCREASE_HOT_SCORE,
 
-    DELAY_ORDER;
+    DELAY_ORDER,
+
+    SECKILL_GOODS_QUEUE_TOPIC,
+
+    SEND_EMAIL;
 }

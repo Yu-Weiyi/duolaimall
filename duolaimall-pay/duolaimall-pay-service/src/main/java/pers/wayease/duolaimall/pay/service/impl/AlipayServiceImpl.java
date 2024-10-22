@@ -136,6 +136,32 @@ public class AlipayServiceImpl implements AlipayService {
         return "success";
     }
 
+    @Override
+    public PaymentInfoDto getPaymentInfoDtoByOutTradeNo(String outTradeNo) {
+        LambdaQueryWrapper<PaymentInfo> payInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        payInfoLambdaQueryWrapper.eq(PaymentInfo::getOutTradeNo,outTradeNo);
+        PaymentInfo paymentInfo = paymentInfoMapper.selectOne(payInfoLambdaQueryWrapper);
+        PaymentInfoDto paymentInfoDto = paymentInfoConverter.paymentInfoPo2Dto(paymentInfo);
+        return paymentInfoDto;
+    }
+
+    @Override
+    public String getAlipayInfo(String outTradeNo) throws AlipayApiException {
+        return payHelper.getTradeStatus(outTradeNo);
+    }
+
+    @Override
+    public void closePaymentInfo(String outTradeNo) {
+        PaymentInfoDto paymentInfoDTO = getPaymentInfoDtoByOutTradeNo(outTradeNo);
+        PaymentInfo paymentInfo = new PaymentInfo();
+        paymentInfo.setId(paymentInfoDTO.getId());
+        paymentInfo.setPaymentStatus(PaymentStatusEnum.CLOSED.name());
+        int updateRows = paymentInfoMapper.updateById(paymentInfo);
+        if (updateRows<1){
+            throw new BaseException(ResultCodeEnum.FAIL);
+        }
+    }
+
     private PaymentInfoDto queryPaymentInfoByOutTradeNoAndPaymentType(String outTradeNo, String payTypeName) {
         LambdaQueryWrapper<PaymentInfo> payInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
         payInfoLambdaQueryWrapper.eq(PaymentInfo::getOutTradeNo,outTradeNo);

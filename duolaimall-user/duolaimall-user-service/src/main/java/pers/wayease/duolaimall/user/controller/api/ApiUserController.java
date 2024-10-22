@@ -32,4 +32,10 @@ public class ApiUserController {
         List<UserAddressDto> userAddressDtoList = userService.getUserAddressListByUserId(userId);
         return Result.ok(userAddressDtoList);
     }
+
+    @GetMapping("/getUserEmailBuUserId/{userId}")
+    public Result<String> getUserEmailBuUserId(@PathVariable("userId") Long userId) {
+        String email = userService.getUserEmailBuUserId(userId);
+        return Result.ok(email);
+    }
 }

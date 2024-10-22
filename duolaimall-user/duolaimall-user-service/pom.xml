@@ -95,6 +95,10 @@
             <version>0.12.6</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

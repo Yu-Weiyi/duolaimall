@@ -18,6 +18,11 @@
             <version>${revision}-${changelist}</version>
         </dependency>
         <dependency>
+            <groupId>pers.wayease.duolaimall</groupId>
+            <artifactId>duolaimall-order-api</artifactId>
+            <version>${revision}-${changelist}</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

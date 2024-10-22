@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import pers.wayease.duolaimall.common.constant.ResultCodeEnum;
 import pers.wayease.duolaimall.common.exception.ThirdPartyException;
+import pers.wayease.duolaimall.email.pojo.param.OrderEmailParam;
 import pers.wayease.duolaimall.email.service.EmailService;
 
 import javax.mail.MessagingException;
@@ -96,5 +97,28 @@ public class EmailServiceImpl implements EmailService {
                         "</html>",
                 to == null ? testEmail : to
         );
+    }
+
+    @Override
+    public void sendOrderEmail(OrderEmailParam orderEmailParam) throws MessagingException {
+        StringBuilder emailStringBuilder = new StringBuilder();
+        emailStringBuilder
+                .append("<!DOCTYPE html><html lang=\"zh\"><head><meta charset=\"UTF-8\">")
+                .append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">")
+                .append("<title>查看您的订单</title><style>")
+                .append("body { font-family: Arial, sans-serif; color: #333; }")
+                .append(".content { padding: 20px; text-align: center; }")
+                .append(".email { font-size: 16px; margin-bottom: 20px; }")
+                .append(".link { font-size: 18px; font-weight: bold; margin-top: 20px; }")
+                .append("a { color: #007bff; text-decoration: none; }")
+                .append("</style></head><body>")
+                .append("<div class=\"content\"><p class=\"email\">您的邮箱：")
+                .append(orderEmailParam.getEmail())
+                .append("</p><p class=\"link\"><a href=\"")
+                .append(orderEmailParam.getUrl())
+                .append("\" target=\"_blank\">点击这里查看订单详情</a></p></div></body></html>");
+        String htmlString = emailStringBuilder.toString();
+
+        sendHtmlMailMessage("查看您的订单 -- duolaimall", htmlString, orderEmailParam.getEmail());
     }
 }

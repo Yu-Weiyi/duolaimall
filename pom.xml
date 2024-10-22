@@ -30,7 +30,7 @@
         <module>duolaimall-promo</module>
     </modules>
     <properties>
-        <revision>0.9.0</revision>
+        <revision>0.9.21</revision>
         <changelist>SNAPSHOT</changelist>
 
         <java.version>17</java.version>

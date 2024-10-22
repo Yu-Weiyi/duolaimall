@@ -1,6 +1,7 @@
 package pers.wayease.duolaimall.pay.service;
 
 import com.alipay.api.AlipayApiException;
+import pers.wayease.duolaimall.pay.pojo.dto.PaymentInfoDto;
 
 import java.util.Map;
 
@@ -18,4 +19,10 @@ public interface AlipayService {
     String createAlipay(Long orderId) throws AlipayApiException;
 
     String callbackNotify(Map<String, String> paramsMap) throws AlipayApiException;
+
+    PaymentInfoDto getPaymentInfoDtoByOutTradeNo(String outTradeNo);
+
+    String getAlipayInfo(String outTradeNo) throws AlipayApiException;
+
+    void closePaymentInfo(String outTradeNo);
 }

@@ -37,4 +37,8 @@ public interface OrderService {
     List<WareOrderTaskDto> orderSplit(String orderId, List<WareSkuDto> wareSkuDTOList);
 
     void successLockStock(String orderId, String taskStatus);
+
+    Long saveScekillOrder(OrderInfoParam orderInfoParam);
+
+    void execExpiredOrder(Long outTradeNo);
 }

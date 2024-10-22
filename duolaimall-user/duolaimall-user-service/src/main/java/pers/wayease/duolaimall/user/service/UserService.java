@@ -22,4 +22,6 @@ public interface UserService {
     void logout();
 
     List<UserAddressDto> getUserAddressListByUserId(Long userId);
+
+    String getUserEmailBuUserId(Long userId);
 }

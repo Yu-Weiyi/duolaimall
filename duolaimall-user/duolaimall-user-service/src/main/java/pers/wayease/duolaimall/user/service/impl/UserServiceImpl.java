@@ -128,4 +128,10 @@ public class UserServiceImpl implements UserService {
         List<UserAddress> userAddressList = userAddressMapper.selectList(lambdaQueryWrapper);
         return userConverter.userAddressPoList2DtoList(userAddressList);
     }
+
+    @Override
+    public String getUserEmailBuUserId(Long userId) {
+        UserInfo userInfo = userInfoMapper.selectById(userId);
+        return userInfo.getEmail();
+    }
 }

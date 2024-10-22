@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="product-service docker build" type="docker-deploy" factoryName="dockerfile" editBeforeRun="true" server-name="Docker">
+    <deployment type="dockerfile">
+      <settings>
+        <option name="imageTag" value="yuweiyi/duolaimall-product-service:0.9.18-SNAPSHOT" />
+        <option name="buildOnly" value="true" />
+        <option name="containerName" value="" />
+        <option name="showCommandPreview" value="true" />
+        <option name="sourceFilePath" value="duolaimall-product/duolaimall-product-service/Dockerfile" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>
